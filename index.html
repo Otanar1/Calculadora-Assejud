@@ -80,6 +80,10 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 @media(max-width:720px){#cooperacao .coop-reference,#cooperacao .coop-hours-row,#cooperacao .coop-results{grid-template-columns:1fr}}
 #cooperacao .coop-actions{margin-top:16px}
 #cooperacao #coopEnvioStatus{margin-top:8px}
+.coop-field-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.coop-field-heading label{margin:0}
+.coop-shortcut{border:1px solid #d5dfef;background:#f2f6fc;color:#234b89;border-radius:7px;padding:5px 8px;font:inherit;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
+.coop-shortcut:hover{background:#e5edf9}
 </style>
 </head>
 <body>
@@ -118,7 +122,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="result"><small>Triênio</small><strong id="rTrienio">R$ 0,00</strong></div>
 <div class="result"><small>Reajuste (diferença da base)</small><strong id="rReajuste">R$ 0,00</strong></div>
 </div><div class="grid manual-grid">
-<div class="field"><label for="cooperacaoVal">Cooperação (tributável) (R$)</label><input id="cooperacaoVal" type="number" min="0" step=".01" value="0"></div>
+<div class="field coop-salary-field"><div class="coop-field-heading"><label for="cooperacaoVal">Cooperação (tributável) (R$)</label><button type="button" class="coop-shortcut" id="abrirCooperacao">Calcular horas ↗</button></div><input id="cooperacaoVal" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="rcmVal">RCM (tributável) (R$)</label><input id="rcmVal" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="outrosTrib">Outros Ganhos (tributáveis) (R$)</label><input id="outrosTrib" type="number" min="0" step=".01" value="0"></div>
 </div></div><div class="results totals-grid income-totals">
@@ -213,6 +217,7 @@ function readTaxParams(){tax.year=Math.max(2020,Math.min(2100,Math.floor(num('ta
 function calcCooperacao(){const horas=Math.max(0,Math.floor(Number($('coopHoras').value)||0));$('coopHoras').value=horas;const ig=sdvEfetivo()*num('igPct')/100;const porHora=ig*.4;const bruto=Math.round(horas*porHora*100)/100;const ir=Math.floor((bruto*.275+1e-8)*100)/100;const liquido=Math.round((bruto-ir)*100)/100;$('igResumo').textContent=money(ig);$('coopValorHora').textContent=money(porHora);$('coopBruto').textContent=money(bruto);$('coopIR').textContent=money(ir);$('coopLiquido').textContent=money(liquido)}
 function calc(){renderParameters();calcCooperacao();const baseSemReajuste=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const vencReajustado=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const tr=Math.round(vencReajustado*num('tri')*num('triPct')/100*100)/100;const reajuste=Math.round((vencReajustado-baseSemReajuste)*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(baseSemReajuste);$('rTrienio').textContent=money(tr);$('rReajuste').textContent=money(reajuste);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);const naoTrib=ali+cre+['auxSaudeFolha','auxSaudeBoleto','auxSaudeDesp','auxSaudeMed','outrosNaoTrib'].reduce((s,id)=>s+num(id),0);const assejud=$('associado').checked?num('assocVal'):0;const trib=Math.round((baseSemReajuste+tr+reajuste+num('cooperacaoVal')+num('rcmVal')+num('outrosTrib'))*100)/100;const inss=inss2026(trib);const ir=irrf2026(trib,inss,Math.max(0,Math.floor(num('dependentesIR'))));$('rPrev').value=money(inss);$('rIR').value=money(ir);const descontos=assejud+inss+ir+['uniOdonto','unimed','scSaude','cooparticipacao','outrosDescontos'].reduce((s,id)=>s+num(id),0);$('totalNaoTrib').textContent=money(naoTrib);$('totalTrib').textContent=money(trib);$('totalGanhos').textContent=money(trib+naoTrib);$('totalAssejud').textContent=money(assejud);$('totalDescontos').textContent=money(descontos);$('totalDescontosResumo').textContent=money(descontos);$('totalGanhos').textContent=money(trib+naoTrib);$('totalLiquido').textContent=money(trib+naoTrib-descontos)}
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab))}));
+$('abrirCooperacao').addEventListener('click',()=>document.querySelector('[data-tab="cooperacao"]').click());
 ['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal','reajuste'].forEach(id=>$(id).addEventListener('input',()=>{renderParameters();calc()}));['padrao','tri','reajuste','filhos','alimentacao','creche','associado'].forEach(id=>$(id).addEventListener('change',calc));
 // Atualiza o demonstrativo em tempo real ao editar qualquer campo da aba Salário mensal, inclusive os valores manuais.
 document.querySelectorAll('#mensal input, #mensal select').forEach(el=>{el.addEventListener('input',calc);el.addEventListener('change',calc)});
