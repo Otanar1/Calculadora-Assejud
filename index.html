@@ -92,7 +92,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <main>
 <div class="eyebrow">Ferramentas de remuneração</div><h2>Calculadora salarial</h2>
 <div class="tabs" role="tablist">
-<button class="active" data-tab="mensal">Salário mensal</button><button data-tab="parametros">Parâmetros</button><button data-tab="tributacao">Parâmetros IR/INSS</button><button data-tab="cooperacao">Cooperação (prévia)</button>
+<button class="active" data-tab="mensal">Salário mensal</button><button data-tab="parametros">Parâmetros</button><button data-tab="tributacao">Parâmetros IR/INSS</button><button data-tab="cooperacao">Cooperação</button><button data-tab="plantao">Plantão</button>
 </div>
 <section id="mensal" class="panel">
 <div class="card"><h3>Dados do cálculo</h3><div class="grid">
@@ -115,6 +115,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="auxSaudeBoleto">Aux. Saúde Pgt. Boleto (R$)</label><input id="auxSaudeBoleto" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="auxSaudeDesp">Aux. Saúde Desp. c/Saúde (R$)</label><input id="auxSaudeDesp" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="auxSaudeMed">Aux. Saúde Medicamento (R$)</label><input id="auxSaudeMed" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="plantaoVal">Plantão (não tributável) (R$)</label><input id="plantaoVal" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="outrosNaoTrib">Outros Ganhos (não tributáveis) (R$)</label><input id="outrosNaoTrib" type="number" min="0" step=".01" value="0"></div>
 </div><div class="result total-result"><small>Total de ganhos não tributáveis</small><strong id="totalNaoTrib">R$ 0,00</strong></div>
 <hr><div class="subsection"><h4>Recebimentos tributáveis</h4><div class="results">
@@ -175,7 +176,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <p class="hint">Os parâmetros tributários são salvos neste navegador, separados dos parâmetros salariais. Confirme os valores oficiais antes de iniciar um novo ano-calendário.</p></div></section>
 <footer class="hint" style="text-align:center;padding:12px 0 24px">Parâmetros tributários: <span id="rodapeAno">2026</span></footer>
 <section id="cooperacao" class="panel hidden">
-<div class="card"><h3>Cooperação (prévia)</h3>
+<div class="card"><h3>Cooperação</h3>
 <p class="hint">Informe a quantidade de horas de cooperação. O limite mensal de referência é de 40 horas, mas você pode informar um total maior, por exemplo, quando houver acúmulo de meses.</p>
 <div class="results coop-reference">
 <div class="result coop-gain"><small>Valor atual do IG</small><strong id="igResumo">R$ 0,00</strong></div>
@@ -192,6 +193,26 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="actions coop-actions"><button type="button" id="enviarCooperacao" class="primary">Enviar bruto para salário mensal</button></div>
 <p id="coopEnvioStatus" class="hint" role="status" aria-live="polite">O valor bruto só será transferido quando você clicar no botão.</p>
 <p class="hint">Estimativa simplificada: considera IR de 27,5% sobre o valor bruto da cooperação, sem outras deduções. O valor do IG é atualizado conforme o SDV e o percentual de IG definidos na aba Parâmetros.</p>
+</div></section>
+
+<section id="plantao" class="panel hidden">
+<div class="card"><h3>Plantão</h3>
+<p class="hint">Área inicial de cálculo de plantões. A estrutura está provisoriamente baseada na aba Cooperação; a fórmula e os critérios específicos serão ajustados posteriormente.</p>
+<div class="results coop-reference">
+<div class="result coop-gain"><small>Valor atual do IG</small><strong id="plantaoIgResumo">R$ 0,00</strong></div>
+<div class="result coop-gain"><small>Valor por hora (0,4 IG)</small><strong id="plantaoValorHora">R$ 0,00</strong></div>
+</div>
+<div class="grid coop-hours-row">
+<div class="field"><label for="plantaoHoras">Horas de plantão (número inteiro)</label><input id="plantaoHoras" type="number" min="0" step="1" value="0"></div>
+</div>
+<div class="results coop-results">
+<div class="result coop-gain"><small>Valor bruto (horas × valor por hora)</small><strong id="plantaoBruto">R$ 0,00</strong></div>
+<div class="result coop-deduction"><small>IR estimado (27,5% do bruto)</small><strong id="plantaoIR">R$ 0,00</strong></div>
+<div class="result coop-total"><small>Valor líquido estimado</small><strong id="plantaoLiquido">R$ 0,00</strong></div>
+</div>
+<div class="actions coop-actions"><button type="button" id="enviarPlantao" class="primary">Enviar bruto para salário mensal</button></div>
+<p id="plantaoEnvioStatus" class="hint" role="status" aria-live="polite">O valor bruto só será transferido quando você clicar no botão.</p>
+<p class="hint">Cálculo provisório, baseado na estrutura da Cooperação. A fórmula e o tratamento tributário do plantão serão definidos depois.</p>
 </div></section>
 </main></div>
 <script>
@@ -215,14 +236,16 @@ function renderTaxParams(){ $('taxYear').value=tax.year;$('inssTeto').value=tax.
 function readTaxParams(){tax.year=Math.max(2020,Math.min(2100,Math.floor(num('taxYear')||2026)));['inssTeto','irDedDep','irSimplificado','irLimiteZero','irLimiteReducao','irReducaoConst','irReducaoCoef'].forEach(id=>tax[id]=num(id));tax.inss=tax.inss.map((f,i)=>({limite:num('inssLim'+i),aliq:num('inssAli'+i)}));tax.ir=tax.ir.map((f,i)=>({limite:i===tax.ir.length-1?Infinity:num('irLim'+i),aliq:num('irAli'+i),deduzir:num('irDed'+i)}));$('rodapeAno').textContent=tax.year}
 
 function calcCooperacao(){const horas=Math.max(0,Math.floor(Number($('coopHoras').value)||0));$('coopHoras').value=horas;const ig=sdvEfetivo()*num('igPct')/100;const porHora=ig*.4;const bruto=Math.round(horas*porHora*100)/100;const ir=Math.floor((bruto*.275+1e-8)*100)/100;const liquido=Math.round((bruto-ir)*100)/100;$('igResumo').textContent=money(ig);$('coopValorHora').textContent=money(porHora);$('coopBruto').textContent=money(bruto);$('coopIR').textContent=money(ir);$('coopLiquido').textContent=money(liquido)}
-function calc(){renderParameters();calcCooperacao();const baseSemReajuste=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const vencReajustado=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const tr=Math.round(vencReajustado*num('tri')*num('triPct')/100*100)/100;const reajuste=Math.round((vencReajustado-baseSemReajuste)*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(baseSemReajuste);$('rTrienio').textContent=money(tr);$('rReajuste').textContent=money(reajuste);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);const naoTrib=ali+cre+['auxSaudeFolha','auxSaudeBoleto','auxSaudeDesp','auxSaudeMed','outrosNaoTrib'].reduce((s,id)=>s+num(id),0);const assejud=$('associado').checked?num('assocVal'):0;const trib=Math.round((baseSemReajuste+tr+reajuste+num('cooperacaoVal')+num('rcmVal')+num('outrosTrib'))*100)/100;const inss=inss2026(trib);const ir=irrf2026(trib,inss,Math.max(0,Math.floor(num('dependentesIR'))));$('rPrev').value=money(inss);$('rIR').value=money(ir);const descontos=assejud+inss+ir+['uniOdonto','unimed','scSaude','cooparticipacao','outrosDescontos'].reduce((s,id)=>s+num(id),0);$('totalNaoTrib').textContent=money(naoTrib);$('totalTrib').textContent=money(trib);$('totalGanhos').textContent=money(trib+naoTrib);$('totalAssejud').textContent=money(assejud);$('totalDescontos').textContent=money(descontos);$('totalDescontosResumo').textContent=money(descontos);$('totalGanhos').textContent=money(trib+naoTrib);$('totalLiquido').textContent=money(trib+naoTrib-descontos)}
+function calcPlantao(){const horas=Math.max(0,Math.floor(Number($('plantaoHoras').value)||0));$('plantaoHoras').value=horas;const ig=sdvEfetivo()*num('igPct')/100;const porHora=ig*.4;const bruto=Math.round(horas*porHora*100)/100;const ir=Math.floor((bruto*.275+1e-8)*100)/100;const liquido=Math.round((bruto-ir)*100)/100;$('plantaoIgResumo').textContent=money(ig);$('plantaoValorHora').textContent=money(porHora);$('plantaoBruto').textContent=money(bruto);$('plantaoIR').textContent=money(ir);$('plantaoLiquido').textContent=money(liquido)}
+function calc(){renderParameters();calcCooperacao();calcPlantao();const baseSemReajuste=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const vencReajustado=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const tr=Math.round(vencReajustado*num('tri')*num('triPct')/100*100)/100;const reajuste=Math.round((vencReajustado-baseSemReajuste)*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(baseSemReajuste);$('rTrienio').textContent=money(tr);$('rReajuste').textContent=money(reajuste);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);const naoTrib=ali+cre+['auxSaudeFolha','auxSaudeBoleto','auxSaudeDesp','auxSaudeMed','plantaoVal','outrosNaoTrib'].reduce((s,id)=>s+num(id),0);const assejud=$('associado').checked?num('assocVal'):0;const trib=Math.round((baseSemReajuste+tr+reajuste+num('cooperacaoVal')+num('rcmVal')+num('outrosTrib'))*100)/100;const inss=inss2026(trib);const ir=irrf2026(trib,inss,Math.max(0,Math.floor(num('dependentesIR'))));$('rPrev').value=money(inss);$('rIR').value=money(ir);const descontos=assejud+inss+ir+['uniOdonto','unimed','scSaude','cooparticipacao','outrosDescontos'].reduce((s,id)=>s+num(id),0);$('totalNaoTrib').textContent=money(naoTrib);$('totalTrib').textContent=money(trib);$('totalGanhos').textContent=money(trib+naoTrib);$('totalAssejud').textContent=money(assejud);$('totalDescontos').textContent=money(descontos);$('totalDescontosResumo').textContent=money(descontos);$('totalGanhos').textContent=money(trib+naoTrib);$('totalLiquido').textContent=money(trib+naoTrib-descontos)}
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab))}));
 $('abrirCooperacao').addEventListener('click',()=>document.querySelector('[data-tab="cooperacao"]').click());
 ['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal','reajuste'].forEach(id=>$(id).addEventListener('input',()=>{renderParameters();calc()}));['padrao','tri','reajuste','filhos','alimentacao','creche','associado'].forEach(id=>$(id).addEventListener('change',calc));
 // Atualiza o demonstrativo em tempo real ao editar qualquer campo da aba Salário mensal, inclusive os valores manuais.
 document.querySelectorAll('#mensal input, #mensal select').forEach(el=>{el.addEventListener('input',calc);el.addEventListener('change',calc)});
-$('coopHoras').addEventListener('input',calcCooperacao);$('coopHoras').addEventListener('change',calcCooperacao);
+$('coopHoras').addEventListener('input',calcCooperacao);$('coopHoras').addEventListener('change',calcCooperacao);$('plantaoHoras').addEventListener('input',calcPlantao);$('plantaoHoras').addEventListener('change',calcPlantao);
 $('enviarCooperacao').addEventListener('click',()=>{const bruto=Math.round(Math.max(0,Number($('coopBruto').textContent.replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0)*100)/100;const campo=$('cooperacaoVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo Cooperação (tributável) já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('coopEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal.'});
+$('enviarPlantao').addEventListener('click',()=>{const bruto=Math.round(Math.max(0,Number($('plantaoBruto').textContent.replace(/[^0-9,.-]/g,'').replace(/\\./g,'').replace(',','.'))||0)*100)/100;const campo=$('plantaoVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo Plantão já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('plantaoEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal.'});
 $('salvarParametros').onclick=()=>{const ids=['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'];const saved={};ids.forEach(id=>saved[id]=$(id).value);saved.dasu=Array.from({length:9},(_,i)=>$('dasu'+(i+1)).value);localStorage.setItem('assejud-parametros',JSON.stringify(saved));alert('Parâmetros salvos neste navegador.')};
 function restaurarBase(){localStorage.removeItem('assejud-parametros');const ids=['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'];ids.forEach(id=>$(id).value=defaults[id]);cfg.dasu=[...defaults.dasu];for(let i=1;i<=9;i++){const el=$('dasu'+i);if(el)el.value=defaults.dasu[i-1]}$('padrao').value='3';$('reajuste').value='0';$('tri').value='0';$('filhos').value='0';$('alimentacao').checked=true;$('creche').checked=false;$('associado').checked=false;renderParameters();calc()}
 $('restaurarParametros').onclick=()=>{if(confirm('Restaurar todos os parâmetros aos valores-base desta versão? As alterações personalizadas serão apagadas.'))restaurarBase()};
