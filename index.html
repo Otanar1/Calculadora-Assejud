@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora Salarial — ASSEJUD</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#172033;background:#f4f6fa}
+*{box-sizing:border-box}body{margin:0}.layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:#15233b;color:#fff;padding:26px 18px}aside h1{font-size:19px;margin:0 0 8px}aside p{font-size:13px;color:#c1cde0;line-height:1.5}
+main{padding:30px;max-width:1150px;width:100%;margin:auto}.eyebrow{color:#4567a5;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+h2{margin:6px 0 22px;font-size:28px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.tabs button{border:1px solid #d7deea;background:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}.tabs button.active{background:#234b89;color:#fff;border-color:#234b89}
+.card{background:#fff;border:1px solid #e1e6ef;border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px #1b31520a}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:13px;font-weight:650;color:#536078}
+input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11px;background:#fff;width:100%;color:#172033}input:focus,select:focus{outline:2px solid #b3c9f4;border-color:#547bc1}
+.inline{display:flex;align-items:center;gap:9px}.inline input{width:auto}.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.primary{background:#234b89;color:#fff;border:0;border-radius:10px;padding:12px 17px;font-weight:700;cursor:pointer}.secondary{border:1px solid #cad3e1;background:#fff;border-radius:10px;padding:12px 17px;cursor:pointer}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.result{background:#f5f8fd;border-radius:12px;padding:14px}.result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
+hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14px;border-radius:10px;background:#fff7e6;color:#7b5415;font-size:13px;line-height:1.5}
+@media(max-width:720px){.layout{grid-template-columns:1fr}aside{padding:17px}main{padding:17px}.grid,.results{grid-template-columns:1fr}.paramrow{grid-template-columns:1fr 1fr}.paramrow span{grid-column:1/-1}h2{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside><h1>ASSEJUD</h1><p>Calculadora salarial<br>Protótipo para conferência dos cálculos</p><hr><p>Valores de referência editáveis. Confirme todos os resultados com a planilha oficial antes de utilizá-los.</p></aside>
+<main>
+<div class="eyebrow">Ferramentas de remuneração</div><h2>Calculadora salarial</h2>
+<div class="tabs" role="tablist">
+<button class="active" data-tab="mensal">Salário mensal</button><button data-tab="parametros">Parâmetros</button><button data-tab="cooperacao">Cooperação (prévia)</button>
+</div>
+<section id="mensal" class="panel">
+<div class="card"><h3>Dados do cálculo</h3><div class="grid">
+<div class="field"><label for="padrao">Padrão de vencimento</label><select id="padrao"></select></div>
+<div class="field"><label for="tri">Quantidade de triênios</label><input id="tri" type="number" min="0" max="20" value="0"></div>
+<div class="field"><label for="reajuste">Reajuste adicional (%)</label><input id="reajuste" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="filhos">Quantidade de filhos para auxílio-creche</label><input id="filhos" type="number" min="0" max="20" value="0"></div>
+</div>
+<hr><div class="grid">
+<label class="inline"><input id="alimentacao" type="checkbox" checked> Considerar auxílio-alimentação</label>
+<label class="inline"><input id="creche" type="checkbox"> Considerar auxílio-creche</label>
+<label class="inline"><input id="associado" type="checkbox"> Associado? (desconto fixo)</label>
+</div><div class="actions"><button id="calcular" class="primary">Calcular remuneração</button><button id="abrirReajuste" class="secondary">Configurar reajuste</button></div></div>
+<div class="card"><h3>Resultado estimado</h3><div class="results">
+<div class="result"><small>Vencimento-base</small><strong id="rBase">R$ 0,00</strong></div>
+<div class="result"><small>Triênios</small><strong id="rTrienio">R$ 0,00</strong></div>
+<div class="result"><small>Auxílio-alimentação</small><strong id="rAlimentacao">R$ 0,00</strong></div>
+<div class="result"><small>Auxílio-creche</small><strong id="rCreche">R$ 0,00</strong></div>
+<div class="result"><small>Previdência (estimativa)</small><strong id="rPrev">A conferir</strong></div>
+<div class="result"><small>Imposto de renda</small><strong id="rIR">A conferir</strong></div>
+</div><hr><div class="result"><small>Subtotal antes de descontos tributários</small><strong id="rBruto">R$ 0,00</strong></div><p class="hint">Tributos e descontos legais não são apresentados como definitivos neste protótipo. As verbas não tributáveis precisam ser segregadas conforme a regra aplicável.</p></div>
+</section>
+<section id="parametros" class="panel hidden"><div class="card"><h3>Parâmetros financeiros</h3><div class="field"><label for="sdv">Valor-base SDV 1A (R$)</label><input id="sdv" type="number" step=".01" value="2894.08"></div>
+<div class="paramrow"><span>Coeficiente ANS 3J</span><input id="ansCoef" type="number" step=".00001" value="5.88007"><strong id="ansVal">R$ 0,00</strong></div>
+<div class="paramrow"><span>Auxílio-alimentação (% ANS 3J)</span><input id="aliPct" type="number" step=".01" value="15"><strong id="aliVal">R$ 0,00</strong></div>
+<div class="paramrow"><span>Auxílio-creche (% ANS 3J)</span><input id="crePct" type="number" step=".01" value="6.27"><strong id="creVal">R$ 0,00</strong></div>
+<div class="paramrow"><span>Triênio (% do vencimento padrão)</span><input id="triPct" type="number" step=".01" value="3"><strong id="triVal">—</strong></div>
+<div class="paramrow"><span>IG (% do SDV 1A)</span><input id="igPct" type="number" step=".01" value="8"><strong id="igVal">R$ 0,00</strong></div>
+<div class="paramrow"><span>Desconto associativo (R$)</span><input id="assocVal" type="number" step=".01" value="15"><strong id="assocOut">R$ 15,00</strong></div>
+<hr><h4>Coeficientes DASU</h4><div id="dasuParams"></div><button id="salvarParametros" class="primary">Salvar parâmetros neste navegador</button><p class="hint">Parâmetros salvos neste navegador não são sincronizados com outros aparelhos.</p></div></section>
+<section id="cooperacao" class="panel hidden"><div class="card"><h3>Cooperação — referência inicial</h3><p>O IG é calculado como percentual configurável do SDV 1A e fica disponível como referência para evoluirmos o módulo.</p><div class="result"><small>Valor atual do IG</small><strong id="igResumo">R$ 0,00</strong></div><p class="hint">Este módulo ainda não reproduz integralmente as regras de cooperação e plantões da planilha VBA.</p></div></section>
+</main></div>
+<dialog id="dlg" style="border:0;border-radius:16px;padding:24px;max-width:420px;width:calc(100% - 30px);box-shadow:0 20px 70px #10203b45"><h3>Reajuste adicional</h3><p class="hint">Informe o percentual adicional aplicado ao vencimento-base.</p><div class="field"><label for="popPct">Percentual (%)</label><input id="popPct" type="number" step=".01" min="0" value="0"></div><div class="actions"><button class="primary" id="aplicarReajuste">Aplicar</button><button class="secondary" id="fecharDlg">Cancelar</button></div></dialog>
+<script>
+const defaults={sdv:2894.08,ansCoef:5.88007,aliPct:15,crePct:6.27,triPct:3,igPct:8,assocVal:15,dasu:[2.17677,2.65840,3.29899,4.37478,5.88009,7.71979,7.86504,8.08729,8.73798]};
+let cfg={...defaults};
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const num=id=>Number($(id).value)||0;
+function ans(){return Math.round(num('sdv')*num('ansCoef')*100)/100}
+function init(){const p=$('padrao');p.innerHTML='';for(let i=1;i<=9;i++){let o=document.createElement('option');o.value=i;o.textContent='DASU-'+i;p.append(o)}
+$('dasuParams').innerHTML=cfg.dasu.map((v,i)=>'<div class="paramrow"><span>DASU-'+(i+1)+'</span><input type="number" step=".00001" id="dasu'+(i+1)+'" value="'+v+'"><strong id="dasuv'+(i+1)+'">'+money(v*num('sdv'))+'</strong></div>').join('');renderParameters();calc()}
+function renderParameters(){const a=ans();$('ansVal').textContent=money(a);$('aliVal').textContent=money(a*num('aliPct')/100);$('creVal').textContent=money(a*num('crePct')/100);$('triVal').textContent=money(num('triPct')/100);$('igVal').textContent=money(num('sdv')*num('igPct')/100);$('assocOut').textContent=money(num('assocVal'));$('igResumo').textContent=money(num('sdv')*num('igPct')/100);for(let i=1;i<=9;i++){const el=$('dasu'+i);if(el)$('dasuv'+i).textContent=money(num('sdv')*Number(el.value||0))}}
+function calc(){renderParameters();const b=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const reaj=num('reajuste')/100;const venc=Math.round(b*(1+reaj)*100)/100;const tr=Math.round(venc*num('tri')*num('triPct')/100*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(venc);$('rTrienio').textContent=money(tr);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);$('rPrev').textContent='A conferir';$('rIR').textContent='A conferir';$('rBruto').textContent=money(venc+tr+ali+cre-($('associado').checked?num('assocVal'):0))}
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab))}));
+$('calcular').onclick=calc;['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'].forEach(id=>$(id).addEventListener('input',()=>{renderParameters();calc()}));['padrao','tri','reajuste','filhos','alimentacao','creche','associado'].forEach(id=>$(id).addEventListener('change',calc));
+$('abrirReajuste').onclick=()=>{$('popPct').value=$('reajuste').value;$('dlg').showModal()};$('aplicarReajuste').onclick=()=>{$('reajuste').value=$('popPct').value;$('dlg').close();calc()};$('fecharDlg').onclick=()=>$('dlg').close();
+$('salvarParametros').onclick=()=>{const ids=['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'];const saved={};ids.forEach(id=>saved[id]=$(id).value);saved.dasu=Array.from({length:9},(_,i)=>$('dasu'+(i+1)).value);localStorage.setItem('assejud-parametros',JSON.stringify(saved));alert('Parâmetros salvos neste navegador.')};
+try{const saved=JSON.parse(localStorage.getItem('assejud-parametros')||'null');if(saved){Object.entries(saved).forEach(([k,v])=>{if($(k))$(k).value=v});if(saved.dasu)cfg.dasu=saved.dasu.map(Number)}}catch(e){}
+init();
+</script>
+</body>
+</html>
