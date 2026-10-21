@@ -16,7 +16,15 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 .inline{display:flex;align-items:center;gap:9px}.inline input{width:auto}.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .primary{background:#234b89;color:#fff;border:0;border-radius:10px;padding:12px 17px;font-weight:700;cursor:pointer}.secondary{border:1px solid #cad3e1;background:#fff;border-radius:10px;padding:12px 17px;cursor:pointer}.danger{border:1px solid #e3b8b8;background:#fff7f7;color:#8b2929;border-radius:10px;padding:12px 17px;cursor:pointer}
 .results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.manual-grid{margin-top:16px}.total-result{margin-top:16px}.totals-grid{margin-top:16px}
-#mensal .income-totals{grid-template-columns:repeat(2,minmax(0,1fr))}
+#mensal .income-totals{grid-template-columns:repeat(3,minmax(0,1fr))}
+#mensal .income-content>.total-result,
+#mensal .deductions-content>.total-result{width:calc((100% - 24px)/3);min-width:0}
+#mensal .income-content>.results{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:720px){
+#mensal .income-content>.total-result,
+#mensal .deductions-content>.total-result{width:100%}
+#mensal .income-content>.results{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 #mensal .totals-section{background:#fff;border-color:#e1e6ef;margin-top:22px}
 #mensal .totals-section .section-mark{background:#91b99a}
 #mensal .deductions-section .total-result{margin-top:18px;background:#f3dfdc;border:1px solid #efdcd9}
