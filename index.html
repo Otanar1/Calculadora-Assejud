@@ -27,11 +27,22 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 #mensal .final-summary .summary-net small{color:#315e3b;font-weight:700}
 #mensal .final-summary .summary-net strong{font-size:clamp(24px,2.5vw,32px);color:#244f30}
 @media(max-width:720px){#mensal .final-summary{grid-template-columns:1fr}#mensal .final-summary .summary-total{padding:15px}#mensal .final-summary .summary-net strong{font-size:27px}}.result input[readonly]{background:#f5f8fd;color:#63718a}.result{background:#f5f8fd;border-radius:12px;padding:14px}
-#mensal .income-section{background:#f4faf5;border-color:#d7e9da}
+#mensal .income-section{background:#fff;border-color:#d7e9da}
+#mensal .income-section .income-content{background:#f4faf5;border:1px solid #d7e9da;border-radius:12px;padding:20px}
+#mensal .income-section .income-content h4{margin-top:0}
+#mensal .income-section .income-content hr{border-top-color:#dce9de}
+#mensal .income-section .income-content .totals-grid{margin-top:18px}
+#mensal .income-section .income-content .result{background:#eaf5ec;border:1px solid #d8e9db}
+#mensal .income-section .income-content .total-result{background:#e2f0e5}
+#mensal .income-section .income-content .income-totals .result{background:#e2f0e5}
 #mensal .income-section h3,#mensal .income-section h4{color:#315e3b}
 #mensal .income-section .result{background:#eaf5ec;border:1px solid #d8e9db}
 #mensal .income-section .total-result,#mensal .income-section .totals-grid .result:last-child{background:#e2f0e5}
-#mensal .deductions-section{background:#fdf6f5;border-color:#efdcd9}
+#mensal .deductions-section{background:#fff;border-color:#efdcd9;margin-top:24px}
+#mensal .deductions-section .deductions-content{background:#fdf6f5;border:1px solid #efdcd9;border-radius:12px;padding:20px}
+#mensal .deductions-section .deductions-content .result{background:#f8eae8;border:1px solid #efdcd9}
+#mensal .deductions-section .deductions-content .totals-grid{margin-top:18px}
+#mensal .income-section .income-content .subsection{padding-top:2px}
 #mensal .deductions-section h3,#mensal .deductions-section h4{color:#81463f}
 #mensal .deductions-section .result{background:#f8eae8;border:1px solid #efdcd9}
 #mensal .deductions-section .totals-grid .result:nth-child(2){background:#f3dfdc}
@@ -68,7 +79,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <label class="inline"><input id="creche" type="checkbox"> Considerar auxílio-creche</label>
 <label class="inline"><input id="associado" type="checkbox"> Associado? (desconto fixo)</label>
 </div><p class="hint">Os valores e totais são atualizados automaticamente conforme você preenche os campos ou altera as opções.</p></div>
-<div class="card income-section"><div class="section-heading"><span class="section-mark"></span><h3>Demonstrativo de recebimentos</h3></div><div class="summary-pill">Recebimentos · valores brutos</div>
+<div class="card income-section"><div class="section-heading"><span class="section-mark"></span><h3>Ganhos</h3></div><div class="income-content"><div class="summary-pill">Recebimentos · valores brutos</div>
 <h4>Recebimentos não tributáveis</h4><div class="results">
 <div class="result"><small>Auxílio-alimentação</small><strong id="rAlimentacao">R$ 0,00</strong></div>
 <div class="result"><small>Auxílio-creche</small><strong id="rCreche">R$ 0,00</strong></div>
@@ -89,9 +100,8 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="outrosTrib">Outros Ganhos (tributáveis) (R$)</label><input id="outrosTrib" type="number" min="0" step=".01" value="0"></div>
 </div></div><div class="results totals-grid income-totals">
 <div class="result"><small>Total de ganhos tributáveis</small><strong id="totalTrib">R$ 0,00</strong></div>
-<div class="result"><small>Total de ganhos não tributáveis</small><strong id="totalNaoTrib2">R$ 0,00</strong></div>
 </div>
-<div class="card deductions-section"><div class="section-heading"><span class="section-mark"></span><h3>Descontos</h3></div><div class="summary-pill">Descontos legais e outros descontos</div><div class="grid manual-grid">
+<div class="card deductions-section"><div class="section-heading"><span class="section-mark"></span><h3>Descontos</h3></div><div class="deductions-content"><div class="summary-pill">Descontos legais e outros descontos</div><div class="grid manual-grid">
 <div class="field"><label for="dependentesIR">Dependentes para IR (quantidade)</label><input id="dependentesIR" type="number" min="0" max="20" step="1" value="0"></div>
 <div class="field"><label for="rIR">Imposto de Renda (IRRF <span id="anoIRLabel">2026</span>)</label><input id="rIR" type="text" value="R$ 0,00" readonly></div>
 <div class="field"><label for="rPrev">INSS (progressivo <span id="anoINSSLabel">2026</span>)</label><input id="rPrev" type="text" value="R$ 0,00" readonly></div>
@@ -102,12 +112,12 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 </div><div class="results totals-grid">
 <div class="result"><small>Assejud</small><strong id="totalAssejud">R$ 0,00</strong></div>
 <div class="result"><small>Total de descontos</small><strong id="totalDescontos">R$ 0,00</strong></div>
-</div><p class="hint">Estimativa para a competência de <span id="anoEstimativa">2026</span>, com tabela progressiva do INSS e tabela mensal do IRRF, incluindo a redução aplicável ao ano selecionado. O IR considera a dedução mais vantajosa entre as deduções legais (INSS e dependentes) e o desconto simplificado mensal. Confira a incidência previdenciária de cada verba com o contracheque oficial: nesta versão, o INSS é estimado sobre o total dos recebimentos tributáveis informados.</p></div>
+</div><p class="hint">Estimativa para a competência de <span id="anoEstimativa">2026</span>, com tabela progressiva do INSS e tabela mensal do IRRF, incluindo a redução aplicável ao ano selecionado. O IR considera a dedução mais vantajosa entre as deduções legais (INSS e dependentes) e o desconto simplificado mensal. Confira a incidência previdenciária de cada verba com o contracheque oficial: nesta versão, o INSS é estimado sobre o total dos recebimentos tributáveis informados.</p></div></div>
 <div class="final-summary" aria-label="Resumo financeiro final">
 <div class="summary-total summary-gains"><small>Total de ganhos</small><strong id="totalGanhos">R$ 0,00</strong></div>
 <div class="summary-total summary-discounts"><small>Total de descontos</small><strong id="totalDescontosResumo">R$ 0,00</strong></div>
 <div class="summary-total summary-net"><small>VALOR LÍQUIDO ESTIMADO</small><strong id="totalLiquido">R$ 0,00</strong></div>
-</div></div>
+</div>
 </section>
 <section id="parametros" class="panel hidden"><div class="card"><h3>Parâmetros financeiros</h3><div class="field"><label for="sdv">Valor-base SDV 1A (R$)</label><input id="sdv" type="number" step=".01" value="2894.08"></div>
 <div class="paramrow"><span>Coeficiente ANS 3J</span><input id="ansCoef" type="number" step=".00001" value="5.88007"><strong id="ansVal">R$ 0,00</strong></div>
