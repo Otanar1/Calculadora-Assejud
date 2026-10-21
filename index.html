@@ -15,7 +15,7 @@ h2{margin:6px 0 22px;font-size:28px}.tabs{display:flex;gap:8px;flex-wrap:wrap;ma
 input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11px;background:#fff;width:100%;color:#172033}input:focus,select:focus{outline:2px solid #b3c9f4;border-color:#547bc1}
 .inline{display:flex;align-items:center;gap:9px}.inline input{width:auto}.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .primary{background:#234b89;color:#fff;border:0;border-radius:10px;padding:12px 17px;font-weight:700;cursor:pointer}.secondary{border:1px solid #cad3e1;background:#fff;border-radius:10px;padding:12px 17px;cursor:pointer}.danger{border:1px solid #e3b8b8;background:#fff7f7;color:#8b2929;border-radius:10px;padding:12px 17px;cursor:pointer}
-.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.result{background:#f5f8fd;border-radius:12px;padding:14px}.result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.manual-grid{margin-top:16px}.total-result{margin-top:16px}.totals-grid{margin-top:16px}.result input[readonly]{background:#f5f8fd;color:#63718a}.result{background:#f5f8fd;border-radius:12px;padding:14px}.result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
 hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14px;border-radius:10px;background:#fff7e6;color:#7b5415;font-size:13px;line-height:1.5}
 @media(max-width:720px){.layout{grid-template-columns:1fr}aside{padding:17px}main{padding:17px}.grid,.results{grid-template-columns:1fr}.paramrow{grid-template-columns:1fr 1fr}.paramrow span{grid-column:1/-1}h2{font-size:24px}}
 </style>
@@ -40,14 +40,42 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <label class="inline"><input id="creche" type="checkbox"> Considerar auxílio-creche</label>
 <label class="inline"><input id="associado" type="checkbox"> Associado? (desconto fixo)</label>
 </div><div class="actions"><button id="calcular" class="primary">Calcular remuneração</button><button id="abrirReajuste" class="secondary">Configurar reajuste</button></div></div>
-<div class="card"><h3>Resultado estimado</h3><div class="results">
-<div class="result"><small>Vencimento-base</small><strong id="rBase">R$ 0,00</strong></div>
-<div class="result"><small>Triênios</small><strong id="rTrienio">R$ 0,00</strong></div>
+<div class="card"><h3>Demonstrativo de recebimentos</h3>
+<h4>Recebimentos não tributáveis</h4><div class="results">
 <div class="result"><small>Auxílio-alimentação</small><strong id="rAlimentacao">R$ 0,00</strong></div>
 <div class="result"><small>Auxílio-creche</small><strong id="rCreche">R$ 0,00</strong></div>
-<div class="result"><small>Previdência (estimativa)</small><strong id="rPrev">A conferir</strong></div>
-<div class="result"><small>Imposto de renda</small><strong id="rIR">A conferir</strong></div>
-</div><hr><div class="result"><small>Subtotal antes de descontos tributários</small><strong id="rBruto">R$ 0,00</strong></div><p class="hint">Tributos e descontos legais não são apresentados como definitivos neste protótipo. As verbas não tributáveis precisam ser segregadas conforme a regra aplicável.</p></div>
+</div><div class="grid manual-grid">
+<div class="field"><label for="auxSaudeFolha">Aux. Saúde Desc. Folha (R$)</label><input id="auxSaudeFolha" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="auxSaudeBoleto">Aux. Saúde Pgt. Boleto (R$)</label><input id="auxSaudeBoleto" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="auxSaudeDesp">Aux. Saúde Desp. c/Saúde (R$)</label><input id="auxSaudeDesp" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="auxSaudeMed">Aux. Saúde Medicamento (R$)</label><input id="auxSaudeMed" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="outrosNaoTrib">Outros Ganhos (não tributáveis) (R$)</label><input id="outrosNaoTrib" type="number" min="0" step=".01" value="0"></div>
+</div><div class="result total-result"><small>Total de ganhos não tributáveis</small><strong id="totalNaoTrib">R$ 0,00</strong></div>
+<hr><h4>Recebimentos tributáveis</h4><div class="results">
+<div class="result"><small>Vencimento-base</small><strong id="rBase">R$ 0,00</strong></div>
+<div class="result"><small>Triênio</small><strong id="rTrienio">R$ 0,00</strong></div>
+<div class="result"><small>Reajuste (diferença da base)</small><strong id="rReajuste">R$ 0,00</strong></div>
+</div><div class="grid manual-grid">
+<div class="field"><label for="cooperacaoVal">Cooperação (tributável) (R$)</label><input id="cooperacaoVal" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="rcmVal">RCM (tributável) (R$)</label><input id="rcmVal" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="outrosTrib">Outros Ganhos (tributáveis) (R$)</label><input id="outrosTrib" type="number" min="0" step=".01" value="0"></div>
+</div><div class="results totals-grid">
+<div class="result"><small>Total de ganhos tributáveis</small><strong id="totalTrib">R$ 0,00</strong></div>
+<div class="result"><small>Total de ganhos não tributáveis</small><strong id="totalNaoTrib2">R$ 0,00</strong></div>
+<div class="result"><small>Total de ganhos</small><strong id="totalGanhos">R$ 0,00</strong></div>
+</div>
+<hr><h4>Descontos</h4><div class="grid manual-grid">
+<div class="field"><label for="rIR">Imposto de Renda (automático — pendente)</label><input id="rIR" type="text" value="A calcular posteriormente" readonly></div>
+<div class="field"><label for="rPrev">INSS (automático — pendente)</label><input id="rPrev" type="text" value="A calcular posteriormente" readonly></div>
+<div class="field"><label for="uniOdonto">Uniodonto (R$)</label><input id="uniOdonto" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="unimed">Unimed/SCSaúde (R$)</label><input id="unimed" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="cooparticipacao">Cooparticipação (R$)</label><input id="cooparticipacao" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><label for="outrosDescontos">Outros Descontos (R$)</label><input id="outrosDescontos" type="number" min="0" step=".01" value="0"></div>
+</div><div class="results totals-grid">
+<div class="result"><small>Assejud</small><strong id="totalAssejud">R$ 0,00</strong></div>
+<div class="result"><small>Total de descontos</small><strong id="totalDescontos">R$ 0,00</strong></div>
+<div class="result"><small>Valor líquido estimado</small><strong id="totalLiquido">R$ 0,00</strong></div>
+</div><p class="hint">Imposto de renda e contribuição previdenciária ainda não são calculados nesta versão. Os campos tributários são exibidos como pendentes e não entram no total de descontos até que a regra de cálculo seja implementada.</p></div>
 </section>
 <section id="parametros" class="panel hidden"><div class="card"><h3>Parâmetros financeiros</h3><div class="field"><label for="sdv">Valor-base SDV 1A (R$)</label><input id="sdv" type="number" step=".01" value="2894.08"></div>
 <div class="paramrow"><span>Coeficiente ANS 3J</span><input id="ansCoef" type="number" step=".00001" value="5.88007"><strong id="ansVal">R$ 0,00</strong></div>
@@ -72,7 +100,7 @@ function ans(){return Math.round(sdvEfetivo()*num('ansCoef')*100)/100}
 function init(){const p=$('padrao');p.innerHTML='';for(let i=1;i<=9;i++){let o=document.createElement('option');o.value=i;o.textContent='DASU-'+i;p.append(o)}p.value='3';
 $('dasuParams').innerHTML=cfg.dasu.map((v,i)=>'<div class="paramrow"><span>DASU-'+(i+1)+'</span><input type="number" step=".00001" id="dasu'+(i+1)+'" value="'+v+'"><strong id="dasuv'+(i+1)+'">'+money(v*num('sdv'))+'</strong></div>').join('');renderParameters();calc()}
 function renderParameters(){const a=ans();const sdv=sdvEfetivo();$('ansVal').textContent=money(a);$('aliVal').textContent=money(a*num('aliPct')/100);$('creVal').textContent=money(a*num('crePct')/100);const padrao=$('padrao');const coef=Number($('dasu'+(padrao.value||1))?.value||cfg.dasu[0]);$('triVal').textContent=money(sdv*coef*num('triPct')/100);$('igVal').textContent=money(sdv*num('igPct')/100);$('assocOut').textContent=money(num('assocVal'));$('igResumo').textContent=money(sdv*num('igPct')/100);for(let i=1;i<=9;i++){const el=$('dasu'+i);if(el)$('dasuv'+i).textContent=money(sdv*Number(el.value||0))}}
-function calc(){renderParameters();const b=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const venc=b;const tr=Math.round(venc*num('tri')*num('triPct')/100*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(venc);$('rTrienio').textContent=money(tr);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);$('rPrev').textContent='A conferir';$('rIR').textContent='A conferir';$('rBruto').textContent=money(venc+tr+ali+cre-($('associado').checked?num('assocVal'):0))}
+function calc(){renderParameters();const baseSemReajuste=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const vencReajustado=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const tr=Math.round(vencReajustado*num('tri')*num('triPct')/100*100)/100;const reajuste=Math.round((vencReajustado-baseSemReajuste)*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(baseSemReajuste);$('rTrienio').textContent=money(tr);$('rReajuste').textContent=money(reajuste);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);const naoTrib=ali+cre+['auxSaudeFolha','auxSaudeBoleto','auxSaudeDesp','auxSaudeMed','outrosNaoTrib'].reduce((s,id)=>s+num(id),0);const assejud=$('associado').checked?num('assocVal'):0;const trib=baseSemReajuste+tr+reajuste+num('cooperacaoVal')+num('rcmVal')+num('outrosTrib');const descontos=assejud+['uniOdonto','unimed','cooparticipacao','outrosDescontos'].reduce((s,id)=>s+num(id),0);$('totalNaoTrib').textContent=money(naoTrib);$('totalNaoTrib2').textContent=money(naoTrib);$('totalTrib').textContent=money(trib);$('totalGanhos').textContent=money(trib+naoTrib);$('totalAssejud').textContent=money(assejud);$('totalDescontos').textContent=money(descontos);$('totalLiquido').textContent=money(trib+naoTrib-descontos)}
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab))}));
 $('calcular').onclick=calc;['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal','reajuste'].forEach(id=>$(id).addEventListener('input',()=>{renderParameters();calc()}));['padrao','tri','reajuste','filhos','alimentacao','creche','associado'].forEach(id=>$(id).addEventListener('change',calc));
 $('abrirReajuste').onclick=()=>{$('popPct').value=$('reajuste').value;$('dlg').showModal()};$('aplicarReajuste').onclick=()=>{$('reajuste').value=$('popPct').value;$('dlg').close();calc()};$('fecharDlg').onclick=()=>$('dlg').close();
