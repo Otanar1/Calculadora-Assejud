@@ -194,7 +194,7 @@ init();renderTaxParams();
 ['taxYear','inssTeto','irDedDep','irSimplificado','irLimiteZero','irLimiteReducao','irReducaoConst','irReducaoCoef'].forEach(id=>$(id).addEventListener('input',()=>{readTaxParams();calc()}));
 $('tributacao').addEventListener('input',e=>{if(e.target.matches('input[id^="inss"],input[id^="irLim"] ,input[id^="irAli"],input[id^="irDed"]')){readTaxParams();calc()}});
 $('salvarTributacao').onclick=()=>{readTaxParams();localStorage.setItem('assejud-tributacao',JSON.stringify(tax));alert('Parâmetros tributários salvos neste navegador.')};
-$('restaurarTributacao').onclick=()=>{if(confirm('Restaurar os parâmetros tributários para os valores iniciais de '+tax.year+'?')){tax={...taxDefaults,inss:taxDefaults.inss.map(x=>({...x})),ir:taxDefaults.ir.map(x=>({...x}))};renderTaxParams();calc()}};
+$('restaurarTributacao').onclick=()=>{if(confirm('Restaurar os parâmetros tributários para os valores do sistema?')){tax={...taxDefaults,inss:taxDefaults.inss.map(x=>({...x})),ir:taxDefaults.ir.map(x=>({...x}))};renderTaxParams();calc()}};
 try{const savedTax=JSON.parse(localStorage.getItem('assejud-tributacao')||'null');if(savedTax){tax={...taxDefaults,...savedTax};renderTaxParams();}}catch(e){}
 calc();
 </script>
