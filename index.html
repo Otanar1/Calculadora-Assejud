@@ -17,7 +17,8 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 .primary{background:#234b89;color:#fff;border:0;border-radius:10px;padding:12px 17px;font-weight:700;cursor:pointer}.secondary{border:1px solid #cad3e1;background:#fff;border-radius:10px;padding:12px 17px;cursor:pointer}.danger{border:1px solid #e3b8b8;background:#fff7f7;color:#8b2929;border-radius:10px;padding:12px 17px;cursor:pointer}
 .results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.manual-grid{margin-top:16px}.total-result{margin-top:16px}.totals-grid{margin-top:16px}
 #mensal .income-totals{grid-template-columns:repeat(2,minmax(0,1fr))}
-#mensal .final-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0 18px}
+#mensal .totals-section{background:#fff;border-color:#e1e6ef;margin-top:22px}
+#mensal .totals-section .final-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0}
 #mensal .final-summary .summary-total{border:1px solid #dce4e0;border-radius:14px;padding:18px;background:#fff;box-shadow:0 3px 12px #1b315208}
 #mensal .final-summary .summary-total small{display:block;color:#59677b;font-size:13px;margin-bottom:10px}
 #mensal .final-summary .summary-total strong{display:block;font-size:clamp(18px,2vw,25px);font-weight:750;font-variant-numeric:tabular-nums}
@@ -100,7 +101,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="outrosTrib">Outros Ganhos (tributáveis) (R$)</label><input id="outrosTrib" type="number" min="0" step=".01" value="0"></div>
 </div></div><div class="results totals-grid income-totals">
 <div class="result"><small>Total de ganhos tributáveis</small><strong id="totalTrib">R$ 0,00</strong></div>
-</div>
+</div></div></div>
 <div class="card deductions-section"><div class="section-heading"><span class="section-mark"></span><h3>Descontos</h3></div><div class="deductions-content"><div class="summary-pill">Descontos legais e outros descontos</div><div class="grid manual-grid">
 <div class="field"><label for="dependentesIR">Dependentes para IR (quantidade)</label><input id="dependentesIR" type="number" min="0" max="20" step="1" value="0"></div>
 <div class="field"><label for="rIR">Imposto de Renda (IRRF <span id="anoIRLabel">2026</span>)</label><input id="rIR" type="text" value="R$ 0,00" readonly></div>
@@ -113,11 +114,11 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="result"><small>Assejud</small><strong id="totalAssejud">R$ 0,00</strong></div>
 <div class="result"><small>Total de descontos</small><strong id="totalDescontos">R$ 0,00</strong></div>
 </div><p class="hint">Estimativa para a competência de <span id="anoEstimativa">2026</span>, com tabela progressiva do INSS e tabela mensal do IRRF, incluindo a redução aplicável ao ano selecionado. O IR considera a dedução mais vantajosa entre as deduções legais (INSS e dependentes) e o desconto simplificado mensal. Confira a incidência previdenciária de cada verba com o contracheque oficial: nesta versão, o INSS é estimado sobre o total dos recebimentos tributáveis informados.</p></div></div>
-<div class="final-summary" aria-label="Resumo financeiro final">
+<div class="card totals-section"><div class="final-summary" aria-label="Resumo financeiro final">
 <div class="summary-total summary-gains"><small>Total de ganhos</small><strong id="totalGanhos">R$ 0,00</strong></div>
 <div class="summary-total summary-discounts"><small>Total de descontos</small><strong id="totalDescontosResumo">R$ 0,00</strong></div>
 <div class="summary-total summary-net"><small>VALOR LÍQUIDO ESTIMADO</small><strong id="totalLiquido">R$ 0,00</strong></div>
-</div>
+</div></div>
 </section>
 <section id="parametros" class="panel hidden"><div class="card"><h3>Parâmetros financeiros</h3><div class="field"><label for="sdv">Valor-base SDV 1A (R$)</label><input id="sdv" type="number" step=".01" value="2894.08"></div>
 <div class="paramrow"><span>Coeficiente ANS 3J</span><input id="ansCoef" type="number" step=".00001" value="5.88007"><strong id="ansVal">R$ 0,00</strong></div>
