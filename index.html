@@ -68,6 +68,16 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 .result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
 hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14px;border-radius:10px;background:#fff7e6;color:#7b5415;font-size:13px;line-height:1.5}
 @media(max-width:720px){.layout{grid-template-columns:1fr}aside{padding:17px}main{padding:17px}.grid,.results{grid-template-columns:1fr}.paramrow{grid-template-columns:1fr 1fr}.paramrow span{grid-column:1/-1}h2{font-size:24px}}
+#cooperacao .coop-reference{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
+#cooperacao .coop-reference .result{grid-column:span 1;background:#eaf5ec;border:1px solid #d8e9db}
+#cooperacao .coop-hours-row{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
+#cooperacao .coop-hours-row .field{grid-column:span 1}
+#cooperacao .coop-results{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+#cooperacao .coop-gain{background:#eaf5ec;border:1px solid #d8e9db}
+#cooperacao .coop-deduction{background:#f8eae8;border:1px solid #efdcd9}
+#cooperacao .coop-total{background:#e5f1e7;border:2px solid #9fc5a6}
+#cooperacao .coop-total strong{font-size:1.2em;color:#244f30}
+@media(max-width:720px){#cooperacao .coop-reference,#cooperacao .coop-hours-row,#cooperacao .coop-results{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -161,15 +171,17 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <section id="cooperacao" class="panel hidden">
 <div class="card"><h3>Cooperação (prévia)</h3>
 <p class="hint">Informe a quantidade de horas de cooperação no mês. O limite é de 40 horas mensais.</p>
-<div class="grid">
-<div class="field"><label for="coopHoras">Horas de cooperação no mês (máximo 40)</label><input id="coopHoras" type="number" min="0" max="40" step="1" value="0"></div>
-<div class="result"><small>Valor atual do IG</small><strong id="igResumo">R$ 0,00</strong></div>
-<div class="result"><small>Valor por hora (0,4 IG)</small><strong id="coopValorHora">R$ 0,00</strong></div>
+<div class="results coop-reference">
+<div class="result coop-gain"><small>Valor atual do IG</small><strong id="igResumo">R$ 0,00</strong></div>
+<div class="result coop-gain"><small>Valor por hora (0,4 IG)</small><strong id="coopValorHora">R$ 0,00</strong></div>
 </div>
-<div class="results" style="margin-top:18px">
-<div class="result"><small>Valor bruto (horas × valor por hora)</small><strong id="coopBruto">R$ 0,00</strong></div>
-<div class="result"><small>IR estimado (27,5% do bruto)</small><strong id="coopIR">R$ 0,00</strong></div>
-<div class="result"><small>Valor líquido estimado</small><strong id="coopLiquido">R$ 0,00</strong></div>
+<div class="grid coop-hours-row">
+<div class="field"><label for="coopHoras">Horas de cooperação no mês (máximo 40)</label><input id="coopHoras" type="number" min="0" max="40" step="1" value="0"></div>
+</div>
+<div class="results coop-results">
+<div class="result coop-gain"><small>Valor bruto (horas × valor por hora)</small><strong id="coopBruto">R$ 0,00</strong></div>
+<div class="result coop-deduction"><small>IR estimado (27,5% do bruto)</small><strong id="coopIR">R$ 0,00</strong></div>
+<div class="result coop-total"><small>Valor líquido estimado</small><strong id="coopLiquido">R$ 0,00</strong></div>
 </div>
 <p class="hint">Estimativa simplificada: considera IR de 27,5% sobre o valor bruto da cooperação, sem outras deduções. O valor do IG é atualizado conforme o SDV e o percentual de IG definidos na aba Parâmetros.</p>
 </div></section>
