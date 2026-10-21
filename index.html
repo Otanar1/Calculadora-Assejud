@@ -66,7 +66,9 @@ let cfg={...defaults};
 const $=id=>document.getElementById(id);
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const num=id=>Number($(id).value)||0;
-function reajusteFator(){return 1+Math.max(0,num('reajuste'))/100}\nfunction sdvEfetivo(){return num('sdv')*reajusteFator()}\nfunction ans(){return Math.round(sdvEfetivo()*num('ansCoef')*100)/100}
+function reajusteFator(){return 1+Math.max(0,num('reajuste'))/100}
+function sdvEfetivo(){return num('sdv')*reajusteFator()}
+function ans(){return Math.round(sdvEfetivo()*num('ansCoef')*100)/100}
 function init(){const p=$('padrao');p.innerHTML='';for(let i=1;i<=9;i++){let o=document.createElement('option');o.value=i;o.textContent='DASU-'+i;p.append(o)}
 $('dasuParams').innerHTML=cfg.dasu.map((v,i)=>'<div class="paramrow"><span>DASU-'+(i+1)+'</span><input type="number" step=".00001" id="dasu'+(i+1)+'" value="'+v+'"><strong id="dasuv'+(i+1)+'">'+money(v*num('sdv'))+'</strong></div>').join('');renderParameters();calc()}
 function renderParameters(){const a=ans();const sdv=sdvEfetivo();$('ansVal').textContent=money(a);$('aliVal').textContent=money(a*num('aliPct')/100);$('creVal').textContent=money(a*num('crePct')/100);const padrao=$('padrao');const coef=Number($('dasu'+(padrao.value||1))?.value||cfg.dasu[0]);$('triVal').textContent=money(sdv*coef*num('triPct')/100);$('igVal').textContent=money(sdv*num('igPct')/100);$('assocOut').textContent=money(num('assocVal'));$('igResumo').textContent=money(sdv*num('igPct')/100);for(let i=1;i<=9;i++){const el=$('dasu'+i);if(el)$('dasuv'+i).textContent=money(sdv*Number(el.value||0))}}
