@@ -15,7 +15,24 @@ h2{margin:6px 0 22px;font-size:28px}.tabs{display:flex;gap:8px;flex-wrap:wrap;ma
 input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11px;background:#fff;width:100%;color:#172033}input:focus,select:focus{outline:2px solid #b3c9f4;border-color:#547bc1}
 .inline{display:flex;align-items:center;gap:9px}.inline input{width:auto}.actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
 .primary{background:#234b89;color:#fff;border:0;border-radius:10px;padding:12px 17px;font-weight:700;cursor:pointer}.secondary{border:1px solid #cad3e1;background:#fff;border-radius:10px;padding:12px 17px;cursor:pointer}.danger{border:1px solid #e3b8b8;background:#fff7f7;color:#8b2929;border-radius:10px;padding:12px 17px;cursor:pointer}
-.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.manual-grid{margin-top:16px}.total-result{margin-top:16px}.totals-grid{margin-top:16px}.result input[readonly]{background:#f5f8fd;color:#63718a}.result{background:#f5f8fd;border-radius:12px;padding:14px}.result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.manual-grid{margin-top:16px}.total-result{margin-top:16px}.totals-grid{margin-top:16px}.result input[readonly]{background:#f5f8fd;color:#63718a}.result{background:#f5f8fd;border-radius:12px;padding:14px}
+#mensal .income-section{background:#f4faf5;border-color:#d7e9da}
+#mensal .income-section h3,#mensal .income-section h4{color:#315e3b}
+#mensal .income-section .result{background:#eaf5ec;border:1px solid #d8e9db}
+#mensal .income-section .total-result,#mensal .income-section .totals-grid .result:last-child{background:#e2f0e5}
+#mensal .deductions-section{background:#fdf6f5;border-color:#efdcd9}
+#mensal .deductions-section h3,#mensal .deductions-section h4{color:#81463f}
+#mensal .deductions-section .result{background:#f8eae8;border:1px solid #efdcd9}
+#mensal .deductions-section .totals-grid .result:nth-child(2){background:#f3dfdc}
+#mensal .deductions-section .totals-grid .result:last-child{background:#f5f0ef;border-color:#e4d7d5}
+#mensal .section-heading{display:flex;align-items:center;gap:10px;margin:0 0 18px}
+#mensal .section-heading .section-mark{width:5px;height:26px;border-radius:5px;background:#91b99a}
+#mensal .deductions-section .section-mark{background:#c88f87}
+#mensal .section-heading h3{margin:0}
+#mensal .subsection{padding-top:2px}
+#mensal .summary-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border-radius:8px;background:#fff;border:1px solid #dce4df;color:#536078;font-size:12px;margin-bottom:12px}
+#mensal .deductions-section .summary-pill{border-color:#ead9d6}
+.result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
 hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14px;border-radius:10px;background:#fff7e6;color:#7b5415;font-size:13px;line-height:1.5}
 @media(max-width:720px){.layout{grid-template-columns:1fr}aside{padding:17px}main{padding:17px}.grid,.results{grid-template-columns:1fr}.paramrow{grid-template-columns:1fr 1fr}.paramrow span{grid-column:1/-1}h2{font-size:24px}}
 </style>
@@ -40,7 +57,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <label class="inline"><input id="creche" type="checkbox"> Considerar auxílio-creche</label>
 <label class="inline"><input id="associado" type="checkbox"> Associado? (desconto fixo)</label>
 </div><p class="hint">Os valores e totais são atualizados automaticamente conforme você preenche os campos ou altera as opções.</p></div>
-<div class="card"><h3>Demonstrativo de recebimentos</h3>
+<div class="card income-section"><div class="section-heading"><span class="section-mark"></span><h3>Demonstrativo de recebimentos</h3></div><div class="summary-pill">Recebimentos · valores brutos</div>
 <h4>Recebimentos não tributáveis</h4><div class="results">
 <div class="result"><small>Auxílio-alimentação</small><strong id="rAlimentacao">R$ 0,00</strong></div>
 <div class="result"><small>Auxílio-creche</small><strong id="rCreche">R$ 0,00</strong></div>
@@ -51,7 +68,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="auxSaudeMed">Aux. Saúde Medicamento (R$)</label><input id="auxSaudeMed" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="outrosNaoTrib">Outros Ganhos (não tributáveis) (R$)</label><input id="outrosNaoTrib" type="number" min="0" step=".01" value="0"></div>
 </div><div class="result total-result"><small>Total de ganhos não tributáveis</small><strong id="totalNaoTrib">R$ 0,00</strong></div>
-<hr><h4>Recebimentos tributáveis</h4><div class="results">
+<hr><div class="subsection"><h4>Recebimentos tributáveis</h4><div class="results">
 <div class="result"><small>Vencimento-base</small><strong id="rBase">R$ 0,00</strong></div>
 <div class="result"><small>Triênio</small><strong id="rTrienio">R$ 0,00</strong></div>
 <div class="result"><small>Reajuste (diferença da base)</small><strong id="rReajuste">R$ 0,00</strong></div>
@@ -59,12 +76,12 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="cooperacaoVal">Cooperação (tributável) (R$)</label><input id="cooperacaoVal" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="rcmVal">RCM (tributável) (R$)</label><input id="rcmVal" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="outrosTrib">Outros Ganhos (tributáveis) (R$)</label><input id="outrosTrib" type="number" min="0" step=".01" value="0"></div>
-</div><div class="results totals-grid">
+</div></div><div class="results totals-grid">
 <div class="result"><small>Total de ganhos tributáveis</small><strong id="totalTrib">R$ 0,00</strong></div>
 <div class="result"><small>Total de ganhos não tributáveis</small><strong id="totalNaoTrib2">R$ 0,00</strong></div>
 <div class="result"><small>Total de ganhos</small><strong id="totalGanhos">R$ 0,00</strong></div>
 </div>
-<hr><h4>Descontos</h4><div class="grid manual-grid">
+<div class="card deductions-section"><div class="section-heading"><span class="section-mark"></span><h3>Descontos</h3></div><div class="summary-pill">Descontos legais e outros descontos</div><div class="grid manual-grid">
 <div class="field"><label for="dependentesIR">Dependentes para IR (quantidade)</label><input id="dependentesIR" type="number" min="0" max="20" step="1" value="0"></div>
 <div class="field"><label for="rIR">Imposto de Renda (IRRF <span id="anoIRLabel">2026</span>)</label><input id="rIR" type="text" value="R$ 0,00" readonly></div>
 <div class="field"><label for="rPrev">INSS (progressivo <span id="anoINSSLabel">2026</span>)</label><input id="rPrev" type="text" value="R$ 0,00" readonly></div>
@@ -76,7 +93,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="result"><small>Assejud</small><strong id="totalAssejud">R$ 0,00</strong></div>
 <div class="result"><small>Total de descontos</small><strong id="totalDescontos">R$ 0,00</strong></div>
 <div class="result"><small>Valor líquido estimado</small><strong id="totalLiquido">R$ 0,00</strong></div>
-</div><p class="hint">Estimativa para a competência de <span id="anoEstimativa">2026</span>, com tabela progressiva do INSS e tabela mensal do IRRF, incluindo a redução aplicável ao ano selecionado. O IR considera a dedução mais vantajosa entre as deduções legais (INSS e dependentes) e o desconto simplificado mensal. Confira a incidência previdenciária de cada verba com o contracheque oficial: nesta versão, o INSS é estimado sobre o total dos recebimentos tributáveis informados.</p></div>
+</div><p class="hint">Estimativa para a competência de <span id="anoEstimativa">2026</span>, com tabela progressiva do INSS e tabela mensal do IRRF, incluindo a redução aplicável ao ano selecionado. O IR considera a dedução mais vantajosa entre as deduções legais (INSS e dependentes) e o desconto simplificado mensal. Confira a incidência previdenciária de cada verba com o contracheque oficial: nesta versão, o INSS é estimado sobre o total dos recebimentos tributáveis informados.</p></div></div>
 </section>
 <section id="parametros" class="panel hidden"><div class="card"><h3>Parâmetros financeiros</h3><div class="field"><label for="sdv">Valor-base SDV 1A (R$)</label><input id="sdv" type="number" step=".01" value="2894.08"></div>
 <div class="paramrow"><span>Coeficiente ANS 3J</span><input id="ansCoef" type="number" step=".00001" value="5.88007"><strong id="ansVal">R$ 0,00</strong></div>
@@ -102,7 +119,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="irReducaoConst">Constante da fórmula de redução (R$)</label><input id="irReducaoConst" type="number" step=".01" value="978.62"></div>
 <div class="field"><label for="irReducaoCoef">Coeficiente da redução</label><input id="irReducaoCoef" type="number" step=".000001" value="0.133145"></div>
 </div>
-<div class="actions"><button id="salvarTributacao" class="primary">Salvar parâmetros tributários</button><button id="restaurarTributacao" class="secondary">Restaurar parâmetros tributários de <span id="anoRestaurar">2026</span></button></div>
+<div class="actions"><button id="salvarTributacao" class="primary">Salvar parâmetros tributários</button><button id="restaurarTributacao" class="secondary">Restaurar parâmetros tributários</button></div>
 <p class="hint">Os parâmetros tributários são salvos neste navegador, separados dos parâmetros salariais. Confirme os valores oficiais antes de iniciar um novo ano-calendário.</p></div></section>
 <footer class="hint" style="text-align:center;padding:12px 0 24px">Parâmetros tributários: <span id="rodapeAno">2026</span></footer>
 <section id="cooperacao" class="panel hidden"><div class="card"><h3>Cooperação — referência inicial</h3><p>O IG é calculado como percentual configurável do SDV 1A e fica disponível como referência para evoluirmos o módulo.</p><div class="result"><small>Valor atual do IG</small><strong id="igResumo">R$ 0,00</strong></div><p class="hint">Este módulo ainda não reproduz integralmente as regras de cooperação e plantões da planilha VBA.</p></div></section>
@@ -124,7 +141,7 @@ let tax={...taxDefaults,inss:taxDefaults.inss.map(x=>({...x})),ir:taxDefaults.ir
 function truncateCent(n){return Math.floor((n+1e-8)*100)/100}
 function inss2026(base){const b=Math.max(0,Math.min(base,Number($('inssTeto').value)||tax.inssTeto));let anterior=0,total=0;for(const f of tax.inss){const parcela=Math.max(0,Math.min(b,Number(f.limite))-anterior);total+=truncateCent(parcela*Number(f.aliq)/100);anterior=Number(f.limite);if(b<=f.limite)break;}return Math.round(total*100)/100}
 function irrf2026(rendimentos,inss,dependentes){const deducoesLegais=inss+dependentes*num('irDedDep');const deducao=Math.max(deducoesLegais,num('irSimplificado'));const base=Math.max(0,rendimentos-deducao);const faixa=tax.ir.find(f=>base<=Number(f.limite))||tax.ir[tax.ir.length-1];const bruto=Math.max(0,base*Number(faixa.aliq)/100-Number(faixa.deduzir));let reducao=0;if(rendimentos<=num('irLimiteZero'))reducao=bruto;else if(rendimentos<=num('irLimiteReducao'))reducao=Math.max(0,num('irReducaoConst')-num('irReducaoCoef')*rendimentos);return truncateCent(Math.max(0,bruto-reducao))}
-function renderTaxParams(){ $('taxYear').value=tax.year;$('inssTeto').value=tax.inssTeto;$('irDedDep').value=tax.irDedDep;$('irSimplificado').value=tax.irSimplificado;$('irLimiteZero').value=tax.irLimiteZero;$('irLimiteReducao').value=tax.irLimiteReducao;$('irReducaoConst').value=tax.irReducaoConst;$('irReducaoCoef').value=tax.irReducaoCoef;$('inssFaixas').innerHTML=tax.inss.map((f,i)=>'<div class="paramrow"><input aria-label="Limite da faixa INSS '+(i+1)+'" id="inssLim'+i+'" type="number" step=".01" value="'+f.limite+'"><input aria-label="Alíquota INSS '+(i+1)+' (%)" id="inssAli'+i+'" type="number" step=".01" value="'+f.aliq+'"><span></span></div>').join('');$('irFaixas').innerHTML=tax.ir.map((f,i)=>'<div class="paramrow"><input aria-label="Limite da faixa IR '+(i+1)+'" id="irLim'+i+'" type="number" step=".01" value="'+(Number.isFinite(f.limite)?f.limite:999999999)+'"><input aria-label="Alíquota IR '+(i+1)+' (%)" id="irAli'+i+'" type="number" step=".01" value="'+f.aliq+'"><input aria-label="Parcela a deduzir IR '+(i+1)+'" id="irDed'+i+'" type="number" step=".01" value="'+f.deduzir+'"></div>').join('');$('rodapeAno').textContent=tax.year;['anoIRLabel','anoINSSLabel','anoEstimativa','anoParametrosIntro','anoRestaurar'].forEach(id=>$(id).textContent=tax.year)}
+function renderTaxParams(){ $('taxYear').value=tax.year;$('inssTeto').value=tax.inssTeto;$('irDedDep').value=tax.irDedDep;$('irSimplificado').value=tax.irSimplificado;$('irLimiteZero').value=tax.irLimiteZero;$('irLimiteReducao').value=tax.irLimiteReducao;$('irReducaoConst').value=tax.irReducaoConst;$('irReducaoCoef').value=tax.irReducaoCoef;$('inssFaixas').innerHTML=tax.inss.map((f,i)=>'<div class="paramrow"><input aria-label="Limite da faixa INSS '+(i+1)+'" id="inssLim'+i+'" type="number" step=".01" value="'+f.limite+'"><input aria-label="Alíquota INSS '+(i+1)+' (%)" id="inssAli'+i+'" type="number" step=".01" value="'+f.aliq+'"><span></span></div>').join('');$('irFaixas').innerHTML=tax.ir.map((f,i)=>'<div class="paramrow"><input aria-label="Limite da faixa IR '+(i+1)+'" id="irLim'+i+'" type="number" step=".01" value="'+(Number.isFinite(f.limite)?f.limite:999999999)+'"><input aria-label="Alíquota IR '+(i+1)+' (%)" id="irAli'+i+'" type="number" step=".01" value="'+f.aliq+'"><input aria-label="Parcela a deduzir IR '+(i+1)+'" id="irDed'+i+'" type="number" step=".01" value="'+f.deduzir+'"></div>').join('');$('rodapeAno').textContent=tax.year;['anoIRLabel','anoINSSLabel','anoEstimativa','anoParametrosIntro'].forEach(id=>$(id).textContent=tax.year)}
 function readTaxParams(){tax.year=Math.max(2020,Math.min(2100,Math.floor(num('taxYear')||2026)));['inssTeto','irDedDep','irSimplificado','irLimiteZero','irLimiteReducao','irReducaoConst','irReducaoCoef'].forEach(id=>tax[id]=num(id));tax.inss=tax.inss.map((f,i)=>({limite:num('inssLim'+i),aliq:num('inssAli'+i)}));tax.ir=tax.ir.map((f,i)=>({limite:i===tax.ir.length-1?Infinity:num('irLim'+i),aliq:num('irAli'+i),deduzir:num('irDed'+i)}));$('rodapeAno').textContent=tax.year}
 
 function calc(){renderParameters();const baseSemReajuste=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const vencReajustado=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const tr=Math.round(vencReajustado*num('tri')*num('triPct')/100*100)/100;const reajuste=Math.round((vencReajustado-baseSemReajuste)*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(baseSemReajuste);$('rTrienio').textContent=money(tr);$('rReajuste').textContent=money(reajuste);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);const naoTrib=ali+cre+['auxSaudeFolha','auxSaudeBoleto','auxSaudeDesp','auxSaudeMed','outrosNaoTrib'].reduce((s,id)=>s+num(id),0);const assejud=$('associado').checked?num('assocVal'):0;const trib=Math.round((baseSemReajuste+tr+reajuste+num('cooperacaoVal')+num('rcmVal')+num('outrosTrib'))*100)/100;const inss=inss2026(trib);const ir=irrf2026(trib,inss,Math.max(0,Math.floor(num('dependentesIR'))));$('rPrev').value=money(inss);$('rIR').value=money(ir);const descontos=assejud+inss+ir+['uniOdonto','unimed','cooparticipacao','outrosDescontos'].reduce((s,id)=>s+num(id),0);$('totalNaoTrib').textContent=money(naoTrib);$('totalNaoTrib2').textContent=money(naoTrib);$('totalTrib').textContent=money(trib);$('totalGanhos').textContent=money(trib+naoTrib);$('totalAssejud').textContent=money(assejud);$('totalDescontos').textContent=money(descontos);$('totalLiquido').textContent=money(trib+naoTrib-descontos)}
