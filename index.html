@@ -78,6 +78,8 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 #cooperacao .coop-total{background:#e5f1e7;border:2px solid #9fc5a6}
 #cooperacao .coop-total strong{font-size:1.2em;color:#244f30}
 @media(max-width:720px){#cooperacao .coop-reference,#cooperacao .coop-hours-row,#cooperacao .coop-results{grid-template-columns:1fr}}
+#cooperacao .coop-actions{margin-top:16px}
+#cooperacao #coopEnvioStatus{margin-top:8px}
 </style>
 </head>
 <body>
@@ -183,6 +185,8 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="result coop-deduction"><small>IR estimado (27,5% do bruto)</small><strong id="coopIR">R$ 0,00</strong></div>
 <div class="result coop-total"><small>Valor líquido estimado</small><strong id="coopLiquido">R$ 0,00</strong></div>
 </div>
+<div class="actions coop-actions"><button type="button" id="enviarCooperacao" class="primary">Enviar bruto para salário mensal</button></div>
+<p id="coopEnvioStatus" class="hint" role="status" aria-live="polite">O valor bruto só será transferido quando você clicar no botão.</p>
 <p class="hint">Estimativa simplificada: considera IR de 27,5% sobre o valor bruto da cooperação, sem outras deduções. O valor do IG é atualizado conforme o SDV e o percentual de IG definidos na aba Parâmetros.</p>
 </div></section>
 </main></div>
@@ -213,6 +217,7 @@ document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',
 // Atualiza o demonstrativo em tempo real ao editar qualquer campo da aba Salário mensal, inclusive os valores manuais.
 document.querySelectorAll('#mensal input, #mensal select').forEach(el=>{el.addEventListener('input',calc);el.addEventListener('change',calc)});
 $('coopHoras').addEventListener('input',calcCooperacao);$('coopHoras').addEventListener('change',calcCooperacao);
+$('enviarCooperacao').addEventListener('click',()=>{const bruto=Math.round(Math.max(0,Number($('coopBruto').textContent.replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0)*100)/100;const campo=$('cooperacaoVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo Cooperação (tributável) já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('coopEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal.'});
 $('salvarParametros').onclick=()=>{const ids=['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'];const saved={};ids.forEach(id=>saved[id]=$(id).value);saved.dasu=Array.from({length:9},(_,i)=>$('dasu'+(i+1)).value);localStorage.setItem('assejud-parametros',JSON.stringify(saved));alert('Parâmetros salvos neste navegador.')};
 function restaurarBase(){localStorage.removeItem('assejud-parametros');const ids=['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'];ids.forEach(id=>$(id).value=defaults[id]);cfg.dasu=[...defaults.dasu];for(let i=1;i<=9;i++){const el=$('dasu'+i);if(el)el.value=defaults.dasu[i-1]}$('padrao').value='3';$('reajuste').value='0';$('tri').value='0';$('filhos').value='0';$('alimentacao').checked=true;$('creche').checked=false;$('associado').checked=false;renderParameters();calc()}
 $('restaurarParametros').onclick=()=>{if(confirm('Restaurar todos os parâmetros aos valores-base desta versão? As alterações personalizadas serão apagadas.'))restaurarBase()};
