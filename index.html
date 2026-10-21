@@ -68,7 +68,6 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 .result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
 hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14px;border-radius:10px;background:#fff7e6;color:#7b5415;font-size:13px;line-height:1.5}
 @media(max-width:720px){.layout{grid-template-columns:1fr}aside{padding:17px}main{padding:17px}.grid,.results{grid-template-columns:1fr}.paramrow{grid-template-columns:1fr 1fr}.paramrow span{grid-column:1/-1}h2{font-size:24px}}
-.coop-readonly{font:inherit;border:1px solid #c9d5e7;border-radius:9px;padding:11px;background:#f1f5f9;width:100%;color:#172033;min-height:44px;display:flex;align-items:center;font-weight:650;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -164,8 +163,8 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <p class="hint">Informe a quantidade de horas de cooperação no mês. O limite é de 40 horas mensais.</p>
 <div class="grid">
 <div class="field"><label for="coopHoras">Horas de cooperação no mês (máximo 40)</label><input id="coopHoras" type="number" min="0" max="40" step="1" value="0"></div>
-<div class="field"><label>Valor atual do IG</label><div class="coop-readonly" id="igResumo">R$ 0,00</div></div>
-<div class="field"><label>Valor por hora (0,4 IG)</label><div class="coop-readonly" id="coopValorHora">R$ 0,00</div></div>
+<div class="result"><small>Valor atual do IG</small><strong id="igResumo">R$ 0,00</strong></div>
+<div class="result"><small>Valor por hora (0,4 IG)</small><strong id="coopValorHora">R$ 0,00</strong></div>
 </div>
 <div class="results" style="margin-top:18px">
 <div class="result"><small>Valor bruto (horas × valor por hora)</small><strong id="coopBruto">R$ 0,00</strong></div>
