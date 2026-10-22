@@ -68,6 +68,21 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 .result small{color:#63718a;display:block;margin-bottom:8px}.result strong{font-size:20px}.hint{font-size:12px;color:#718097;line-height:1.5}.hidden{display:none}.paramrow{display:grid;grid-template-columns:1fr 140px 140px;gap:12px;align-items:center;margin:12px 0}
 hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14px;border-radius:10px;background:#fff7e6;color:#7b5415;font-size:13px;line-height:1.5}
 @media(max-width:720px){.layout{grid-template-columns:1fr}aside{padding:17px}main{padding:17px}.grid,.results{grid-template-columns:1fr}.paramrow{grid-template-columns:1fr 1fr}.paramrow span{grid-column:1/-1}h2{font-size:24px}}
+/* Ajustes para telas estreitas: impede que valores longos ultrapassem os cartões. */
+.result,.result small,.result strong,.summary-total,.summary-total small,.summary-total strong{min-width:0;max-width:100%}
+.result strong,.summary-total strong{overflow-wrap:anywhere;word-break:normal;line-height:1.25}
+@media(max-width:720px){
+  main{padding:12px}
+  .card{padding:16px}
+  #mensal .income-section .income-content,#mensal .deductions-section .deductions-content{padding:12px}
+  #mensal .income-content>.results,#mensal .income-totals,#mensal .deductions-content>.results,#mensal .final-summary{grid-template-columns:minmax(0,1fr)}
+  #mensal .income-content>.total-result,#mensal .deductions-content>.total-result{width:100%}
+  #mensal .results,.results,.totals-grid{min-width:0}
+  #mensal .result strong,.result strong{font-size:clamp(16px,4.5vw,20px);overflow-wrap:anywhere}
+  #mensal .final-summary .summary-total{padding:14px}
+  #mensal .final-summary .summary-net strong{font-size:clamp(22px,6vw,27px)}
+  .grid{grid-template-columns:minmax(0,1fr)}
+}
 #cooperacao .coop-reference{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
 #cooperacao .coop-reference .result{grid-column:span 1;background:#f5f7fa;border:1px solid #e1e6ef}
 #cooperacao .coop-hours-row{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
