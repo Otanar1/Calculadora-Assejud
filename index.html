@@ -95,6 +95,20 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 .coop-field-heading label{margin:0}
 .coop-shortcut{border:1px solid #d5dfef;background:#f2f6fc;color:#234b89;border-radius:7px;padding:5px 8px;font:inherit;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
 .coop-shortcut:hover{background:#e5edf9}
+#rcm .coop-reference{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
+#rcm .coop-reference .result{background:#f5f7fa;border:1px solid #e1e6ef}
+#rcm .coop-hours-row{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
+#rcm .coop-hours-row .field{grid-column:span 1}
+#rcm .coop-results{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}
+#rcm .coop-gain{background:#eaf5ec;border:1px solid #d8e9db}
+#rcm .coop-deduction{background:#f8eae8;border:1px solid #efdcd9}
+#rcm .coop-total{background:#e5f1e7;border:2px solid #9fc5a6}
+#rcm .coop-total strong{font-size:1.2em;color:#244f30}
+#rcm .coop-actions{margin-top:16px}
+#rcm #rcmEnvioStatus{margin-top:8px}
+@media(max-width:720px){#rcm .coop-reference,#rcm .coop-hours-row,#rcm .coop-results{grid-template-columns:1fr}}
+#mensal #rcmVal{border-color:#d7e9da;background:#f4faf5}
+
 </style>
 </head>
 <body>
@@ -135,7 +149,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="result"><small>Reajuste (diferença da base)</small><strong id="rReajuste">R$ 0,00</strong></div>
 </div><div class="grid manual-grid">
 <div class="field coop-salary-field"><div class="coop-field-heading"><label for="cooperacaoVal">Cooperação (tributável) (R$)</label><button type="button" class="coop-shortcut" id="abrirCooperacao">Calcular horas ↗</button></div><input id="cooperacaoVal" type="number" min="0" step=".01" value="0"></div>
-<div class="field"><label for="rcmVal">RCM (tributável) (R$)</label><input id="rcmVal" type="number" min="0" step=".01" value="0"></div>
+<div class="field"><div class="coop-field-heading"><label for="rcmVal">RCM (tributável) (R$)</label><button type="button" class="coop-shortcut" id="abrirRCM">Calcular RCM ↗</button></div><input id="rcmVal" type="number" min="0" step=".01" value="0"></div>
 <div class="field"><label for="outrosTrib">Outros Ganhos (tributáveis) (R$)</label><input id="outrosTrib" type="number" min="0" step=".01" value="0"></div>
 </div></div><div class="results totals-grid income-totals">
 <div class="result"><small>Total de ganhos tributáveis</small><strong id="totalTrib">R$ 0,00</strong></div>
@@ -296,7 +310,7 @@ function enviarRCM(origem){const ig=sdvEfetivo()*num('igPct')/100;const bruto=or
 
 function calc(){renderParameters();calcCooperacao();calcPlantao();calcRCM();const baseSemReajuste=Math.round(num('sdv')*Number($('dasu'+$('padrao').value).value)*100)/100;const vencReajustado=Math.round(sdvEfetivo()*Number($('dasu'+$('padrao').value).value)*100)/100;const tr=Math.round(vencReajustado*num('tri')*num('triPct')/100*100)/100;const reajuste=Math.round((vencReajustado-baseSemReajuste)*100)/100;const ali=$('alimentacao').checked?Math.round(ans()*num('aliPct')/100*100)/100:0;const cre=$('creche').checked?Math.round(ans()*num('crePct')/100*num('filhos')*100)/100:0;$('rBase').textContent=money(baseSemReajuste);$('rTrienio').textContent=money(tr);$('rReajuste').textContent=money(reajuste);$('rAlimentacao').textContent=money(ali);$('rCreche').textContent=money(cre);const naoTrib=ali+cre+['auxSaudeFolha','auxSaudeBoleto','auxSaudeDesp','auxSaudeMed','plantaoVal','outrosNaoTrib'].reduce((s,id)=>s+num(id),0);const assejud=$('associado').checked?num('assocVal'):0;const trib=Math.round((baseSemReajuste+tr+reajuste+num('cooperacaoVal')+num('rcmVal')+num('outrosTrib'))*100)/100;const inss=inss2026(trib);const ir=irrf2026(trib,inss,Math.max(0,Math.floor(num('dependentesIR'))));$('rPrev').value=money(inss);$('rIR').value=money(ir);const descontos=assejud+inss+ir+['uniOdonto','unimed','scSaude','cooparticipacao','outrosDescontos'].reduce((s,id)=>s+num(id),0);$('totalNaoTrib').textContent=money(naoTrib);$('totalTrib').textContent=money(trib);$('totalGanhos').textContent=money(trib+naoTrib);$('totalAssejud').textContent=money(assejud);$('totalDescontos').textContent=money(descontos);$('totalDescontosResumo').textContent=money(descontos);$('totalGanhos').textContent=money(trib+naoTrib);$('totalLiquido').textContent=money(trib+naoTrib-descontos)}
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab))}));
-$('abrirCooperacao').addEventListener('click',()=>document.querySelector('[data-tab="cooperacao"]').click());$('abrirPlantao').addEventListener('click',()=>document.querySelector('[data-tab="plantao"]').click());
+$('abrirCooperacao').addEventListener('click',()=>document.querySelector('[data-tab="cooperacao"]').click());$('abrirPlantao').addEventListener('click',()=>document.querySelector('[data-tab="plantao"]').click());$('abrirRCM').addEventListener('click',()=>document.querySelector('[data-tab="rcm"]').click());
 ['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal','reajuste'].forEach(id=>$(id).addEventListener('input',()=>{renderParameters();calc()}));['padrao','tri','reajuste','filhos','alimentacao','creche','associado'].forEach(id=>$(id).addEventListener('change',calc));
 // Atualiza o demonstrativo em tempo real ao editar qualquer campo da aba Salário mensal, inclusive os valores manuais.
 document.querySelectorAll('#mensal input, #mensal select').forEach(el=>{el.addEventListener('input',calc);el.addEventListener('change',calc)});
