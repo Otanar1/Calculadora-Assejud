@@ -247,41 +247,23 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 
 <section id="rcm" class="panel hidden">
 <div class="card"><h3>RCM</h3>
-<p class="hint">Esta aba replica a estrutura do Plantão como ponto de partida. A fórmula específica do RCM e os critérios tributários serão definidos posteriormente.</p>
+<p class="hint">Informe a quantidade de horas de RCM. O limite mensal de referência é de 40 horas; você pode informar um total maior se precisar considerar acúmulo de meses.</p>
 <div class="results coop-reference">
 <div class="result coop-gain"><small>Valor atual do IG</small><strong id="rcmIgResumo">R$ 0,00</strong></div>
-<div class="result coop-gain"><small>Valor por dia COM expediente (2 IGs)</small><strong id="rcmValorCom">R$ 0,00</strong></div>
-<div class="result coop-gain"><small>Valor por dia SEM expediente (3 IGs)</small><strong id="rcmValorSem">R$ 0,00</strong></div>
+<div class="result coop-gain"><small>Valor por hora (0,4 IG)</small><strong id="rcmValorHora">R$ 0,00</strong></div>
+<div class="result coop-gain"><small>Referência mensal (40 horas)</small><strong id="rcmLimiteMensal">R$ 0,00</strong></div>
 </div>
-<hr>
-<h4>Cálculo por dia de RCM</h4>
-<div class="grid">
-<div class="field"><label for="rcmDiasCom">Dias COM expediente vendidos</label><input id="rcmDiasCom" type="number" min="0" step="1" value="0"></div>
-<div class="field"><label for="rcmDiasSem">Dias SEM expediente vendidos</label><input id="rcmDiasSem" type="number" min="0" step="1" value="0"></div>
-<div class="field"><label for="rcmPessoasDia">Pessoas para dividir o líquido</label><input id="rcmPessoasDia" type="number" min="1" step="1" value="1"></div>
+<div class="grid coop-hours-row">
+<div class="field"><label for="rcmHoras">Horas de RCM (número inteiro)</label><input id="rcmHoras" type="number" min="0" step="1" value="0"></div>
 </div>
 <div class="results coop-results">
-<div class="result coop-gain"><small>Valor bruto total</small><strong id="rcmBrutoDia">R$ 0,00</strong></div>
-<div class="result coop-deduction"><small>Imposto de Renda</small><strong>Isento — R$ 0,00</strong></div>
-<div class="result coop-total"><small>Valor líquido total</small><strong id="rcmLiquidoDia">R$ 0,00</strong></div>
+<div class="result coop-gain"><small>Valor bruto (horas × valor por hora)</small><strong id="rcmBruto">R$ 0,00</strong></div>
+<div class="result coop-deduction"><small>IR estimado (27,5% do bruto)</small><strong id="rcmIR">R$ 0,00</strong></div>
+<div class="result coop-total"><small>Valor líquido estimado</small><strong id="rcmLiquido">R$ 0,00</strong></div>
 </div>
-<div class="result" style="margin-top:12px"><small>Líquido por pessoa</small><strong id="rcmPorPessoaDia">R$ 0,00</strong></div>
-<div class="actions coop-actions"><button type="button" id="enviarRCMDia" class="primary">Enviar valor bruto para salário mensal</button></div>
-<hr>
-<h4>Cálculo por IG</h4>
-<p class="hint">Informe diretamente a quantidade total de IGs, sem informar ou calcular dias de RCM.</p>
-<div class="grid">
-<div class="field"><label for="rcmQuantidadeIG">Quantidade de IGs</label><input id="rcmQuantidadeIG" type="number" min="0" step="0.01" value="0"></div>
-<div class="field"><label for="rcmPessoasIG">Pessoas para dividir o líquido</label><input id="rcmPessoasIG" type="number" min="1" step="1" value="1"></div>
-</div>
-<div class="results coop-results">
-<div class="result coop-gain"><small>Valor bruto</small><strong id="rcmBrutoIG">R$ 0,00</strong></div>
-<div class="result coop-deduction"><small>Imposto de Renda</small><strong>Isento — R$ 0,00</strong></div>
-<div class="result coop-total"><small>Valor líquido</small><strong id="rcmLiquidoIG">R$ 0,00</strong></div>
-</div>
-<div class="result" style="margin-top:12px"><small>Líquido por pessoa</small><strong id="rcmPorPessoaIG">R$ 0,00</strong></div>
-<div class="actions coop-actions"><button type="button" id="enviarRCMIG" class="primary">Enviar valor bruto para salário mensal</button></div>
-<p id="rcmEnvioStatus" class="hint" role="status" aria-live="polite">Os valores só serão transferidos quando você clicar no botão correspondente.</p>
+<div class="actions coop-actions"><button type="button" id="enviarRCM" class="primary">Enviar bruto para salário mensal</button></div>
+<p id="rcmEnvioStatus" class="hint" role="status" aria-live="polite">O valor bruto só será transferido quando você clicar no botão.</p>
+<p class="hint">Estimativa simplificada: considera IR de 27,5% sobre o valor bruto do RCM, sem outras deduções. O valor do IG é atualizado conforme o SDV e o percentual de IG definidos na aba Parâmetros. Na aba Salário mensal, o RCM é somado aos recebimentos tributáveis e entra no cálculo geral de IRRF e INSS.</p>
 </div></section>
 </main></div>
 <script>
@@ -306,7 +288,9 @@ function readTaxParams(){tax.year=Math.max(2020,Math.min(2100,Math.floor(num('ta
 
 function calcCooperacao(){const horas=Math.max(0,Math.floor(Number($('coopHoras').value)||0));$('coopHoras').value=horas;const ig=sdvEfetivo()*num('igPct')/100;const porHora=ig*.4;const bruto=Math.round(horas*porHora*100)/100;const ir=Math.floor((bruto*.275+1e-8)*100)/100;const liquido=Math.round((bruto-ir)*100)/100;$('igResumo').textContent=money(ig);$('coopValorHora').textContent=money(porHora);$('coopBruto').textContent=money(bruto);$('coopIR').textContent=money(ir);$('coopLiquido').textContent=money(liquido)}
 function calcPlantao(){const ig=sdvEfetivo()*num('igPct')/100;const diasCom=Math.max(0,Math.floor(Number($('plantaoDiasCom').value)||0));const diasSem=Math.max(0,Math.floor(Number($('plantaoDiasSem').value)||0));$('plantaoDiasCom').value=diasCom;$('plantaoDiasSem').value=diasSem;const brutoDia=Math.round((diasCom*2*ig+diasSem*3*ig)*100)/100;const pessoasDia=Math.max(1,Math.floor(Number($('plantaoPessoasDia').value)||1));$('plantaoPessoasDia').value=pessoasDia;const qtdIG=Math.max(0,Number($('plantaoQuantidadeIG').value)||0);const brutoIG=Math.round(qtdIG*ig*100)/100;const pessoasIG=Math.max(1,Math.floor(Number($('plantaoPessoasIG').value)||1));$('plantaoPessoasIG').value=pessoasIG;$('plantaoIgResumo').textContent=money(ig);$('plantaoValorCom').textContent=money(2*ig);$('plantaoValorSem').textContent=money(3*ig);$('plantaoBrutoDia').textContent=money(brutoDia);$('plantaoLiquidoDia').textContent=money(brutoDia);$('plantaoPorPessoaDia').textContent=money(brutoDia/pessoasDia);$('plantaoBrutoIG').textContent=money(brutoIG);$('plantaoLiquidoIG').textContent=money(brutoIG);$('plantaoPorPessoaIG').textContent=money(brutoIG/pessoasIG)}
-function calcRCM(){const ig=sdvEfetivo()*num('igPct')/100;const diasCom=Math.max(0,Math.floor(Number($('rcmDiasCom').value)||0));const diasSem=Math.max(0,Math.floor(Number($('rcmDiasSem').value)||0));$('rcmDiasCom').value=diasCom;$('rcmDiasSem').value=diasSem;const brutoDia=Math.round((diasCom*2*ig+diasSem*3*ig)*100)/100;const pessoasDia=Math.max(1,Math.floor(Number($('rcmPessoasDia').value)||1));$('rcmPessoasDia').value=pessoasDia;const qtdIG=Math.max(0,Number($('rcmQuantidadeIG').value)||0);const brutoIG=Math.round(qtdIG*ig*100)/100;const pessoasIG=Math.max(1,Math.floor(Number($('rcmPessoasIG').value)||1));$('rcmPessoasIG').value=pessoasIG;$('rcmIgResumo').textContent=money(ig);$('rcmValorCom').textContent=money(2*ig);$('rcmValorSem').textContent=money(3*ig);$('rcmBrutoDia').textContent=money(brutoDia);$('rcmLiquidoDia').textContent=money(brutoDia);$('rcmPorPessoaDia').textContent=money(brutoDia/pessoasDia);$('rcmBrutoIG').textContent=money(brutoIG);$('rcmLiquidoIG').textContent=money(brutoIG);$('rcmPorPessoaIG').textContent=money(brutoIG/pessoasIG)}
+function calcRCM(){const horas=Math.max(0,Math.floor(Number($('rcmHoras').value)||0));$('rcmHoras').value=horas;const ig=sdvEfetivo()*num('igPct')/100;const porHora=ig*.4;const bruto=Math.round(horas*porHora*100)/100;const ir=Math.floor((bruto*.275+1e-8)*100)/100;const liquido=Math.round((bruto-ir)*100)/100;$('rcmIgResumo').textContent=money(ig);$('rcmValorHora').textContent=money(porHora);$('rcmLimiteMensal').textContent=money(40*porHora);$('rcmBruto').textContent=money(bruto);$('rcmIR').textContent=money(ir);$('rcmLiquido').textContent=money(liquido)}
+function enviarRCM(){const horas=Math.max(0,Math.floor(Number($('rcmHoras').value)||0));const ig=sdvEfetivo()*num('igPct')/100;const bruto=Math.round(horas*ig*.4*100)/100;const campo=$('rcmVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo RCM já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('rcmEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal como recebimento tributável.'}
+
 function enviarPlantao(origem){const ig=sdvEfetivo()*num('igPct')/100;const bruto=origem==='dia'?Math.round((Math.max(0,Math.floor(Number($('plantaoDiasCom').value)||0))*2*ig+Math.max(0,Math.floor(Number($('plantaoDiasSem').value)||0))*3*ig)*100)/100:Math.round(Math.max(0,Number($('plantaoQuantidadeIG').value)||0)*ig*100)/100;const campo=$('plantaoVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo Plantão já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('plantaoEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal como recebimento tributável.'}
 function enviarRCM(origem){const ig=sdvEfetivo()*num('igPct')/100;const bruto=origem==='dia'?Math.round((Math.max(0,Math.floor(Number($('rcmDiasCom').value)||0))*2*ig+Math.max(0,Math.floor(Number($('rcmDiasSem').value)||0))*3*ig)*100)/100:Math.round(Math.max(0,Number($('rcmQuantidadeIG').value)||0)*ig*100)/100;const campo=$('rcmVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo RCM já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('rcmEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal como recebimento tributável.'}
 
@@ -316,7 +300,7 @@ $('abrirCooperacao').addEventListener('click',()=>document.querySelector('[data-
 ['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal','reajuste'].forEach(id=>$(id).addEventListener('input',()=>{renderParameters();calc()}));['padrao','tri','reajuste','filhos','alimentacao','creche','associado'].forEach(id=>$(id).addEventListener('change',calc));
 // Atualiza o demonstrativo em tempo real ao editar qualquer campo da aba Salário mensal, inclusive os valores manuais.
 document.querySelectorAll('#mensal input, #mensal select').forEach(el=>{el.addEventListener('input',calc);el.addEventListener('change',calc)});
-$('coopHoras').addEventListener('input',calcCooperacao);$('coopHoras').addEventListener('change',calcCooperacao);['plantaoDiasCom','plantaoDiasSem','plantaoPessoasDia','plantaoQuantidadeIG','plantaoPessoasIG'].forEach(id=>{ $(id).addEventListener('input',calcPlantao); $(id).addEventListener('change',calcPlantao); });$('enviarPlantaoDia').addEventListener('click',()=>enviarPlantao('dia'));$('enviarPlantaoIG').addEventListener('click',()=>enviarPlantao('ig'));['rcmDiasCom','rcmDiasSem','rcmPessoasDia','rcmQuantidadeIG','rcmPessoasIG'].forEach(id=>{ $(id).addEventListener('input',calcRCM); $(id).addEventListener('change',calcRCM); });$('enviarRCMDia').addEventListener('click',()=>enviarRCM('dia'));$('enviarRCMIG').addEventListener('click',()=>enviarRCM('ig'));
+$('coopHoras').addEventListener('input',calcCooperacao);$('coopHoras').addEventListener('change',calcCooperacao);['plantaoDiasCom','plantaoDiasSem','plantaoPessoasDia','plantaoQuantidadeIG','plantaoPessoasIG'].forEach(id=>{ $(id).addEventListener('input',calcPlantao); $(id).addEventListener('change',calcPlantao); });$('enviarPlantaoDia').addEventListener('click',()=>enviarPlantao('dia'));$('enviarPlantaoIG').addEventListener('click',()=>enviarPlantao('ig'));$('rcmHoras').addEventListener('input',calcRCM);$('rcmHoras').addEventListener('change',calcRCM);$('enviarRCM').addEventListener('click',enviarRCM);
 $('enviarCooperacao').addEventListener('click',()=>{const bruto=Math.round(Math.max(0,Number($('coopBruto').textContent.replace(/[^0-9,.-]/g,'').replace(/\./g,'').replace(',','.'))||0)*100)/100;const campo=$('cooperacaoVal');const anterior=Number(campo.value)||0;if(anterior!==bruto&&anterior>0&&!confirm('O campo Cooperação (tributável) já contém '+money(anterior)+'. Deseja substituir esse valor por '+money(bruto)+'?'))return;campo.value=bruto.toFixed(2);calc();document.querySelector('[data-tab="mensal"]').click();$('coopEnvioStatus').textContent='Valor bruto de '+money(bruto)+' enviado para Salário mensal.'});
 
 $('salvarParametros').onclick=()=>{const ids=['sdv','ansCoef','aliPct','crePct','triPct','igPct','assocVal'];const saved={};ids.forEach(id=>saved[id]=$(id).value);saved.dasu=Array.from({length:9},(_,i)=>$('dasu'+(i+1)).value);localStorage.setItem('assejud-parametros',JSON.stringify(saved));alert('Parâmetros salvos neste navegador.')};
