@@ -37,7 +37,7 @@ input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11p
 #mensal .final-summary .summary-net{background:#e5f1e7;border:2px solid #9fc5a6;padding:20px}
 #mensal .final-summary .summary-net small{color:#315e3b;font-weight:700}
 #mensal .final-summary .summary-net strong{font-size:clamp(24px,2.5vw,32px);color:#244f30}
-@media(max-width:720px){#mensal .final-summary{grid-template-columns:1fr}#mensal .final-summary .summary-total{padding:15px}#mensal .final-summary .summary-net strong{font-size:27px}}.result input[readonly]{background:#f5f8fd;color:#63718a}.result{background:#f5f8fd;border-radius:12px;padding:14px}
+@media(max-width:720px){#mensal .totals-section .final-summary{grid-template-columns:minmax(0,1fr);width:100%;min-width:0}#mensal .totals-section .final-summary .summary-total{box-sizing:border-box;width:100%;max-width:100%;min-width:0;padding:15px;overflow:hidden}#mensal .totals-section .final-summary .summary-total small{overflow-wrap:anywhere}#mensal .totals-section .final-summary .summary-total strong{display:block;max-width:100%;min-width:0;font-size:clamp(20px,6vw,27px);white-space:normal;overflow-wrap:anywhere;word-break:normal;line-height:1.25;font-variant-numeric:tabular-nums}}.result input[readonly]{background:#f5f8fd;color:#63718a}.result{background:#f5f8fd;border-radius:12px;padding:14px}
 #mensal .income-section{background:#fff;border-color:#d7e9da}
 #mensal .income-section .income-content{background:#f4faf5;border:1px solid #d7e9da;border-radius:12px;padding:20px}
 #mensal .income-section .income-content h4{margin-top:0}
