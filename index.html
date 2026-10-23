@@ -246,15 +246,13 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <h3>Memória de cálculo por competência</h3>
 <label class="inline" style="margin:12px 0 14px"><input id="descMostrarCompleto" type="checkbox"> Exibir cálculo completo</label>
 <div id="descTabelaResumo"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px;min-width:0"><thead><tr><th style="text-align:left;padding:9px;border-bottom:2px solid #d7deea">Competência</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Líquido</th></tr></thead><tbody id="descResumoLinhas"></tbody><tfoot id="descResumoTotais"></tfoot></table></div></div>
-<div id="descTabelaCompleta" class="hidden"><label class="inline" style="margin:12px 0 14px"><input id="descMostrarCompleto" type="checkbox"> Exibir cálculo completo</label>
-<div id="descTabelaResumo"><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px;min-width:0"><thead><tr><th style="text-align:left;padding:9px;border-bottom:2px solid #d7deea">Competência</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Líquido</th></tr></thead><tbody id="descResumoLinhas"></tbody><tfoot id="descResumoTotais"></tfoot></table></div></div>
 <div id="descTabelaCompleta" class="hidden"><div style="overflow-x:auto">
 <table style="width:100%;border-collapse:collapse;min-width:850px;font-size:13px">
 <thead><tr><th style="text-align:left;padding:9px;border-bottom:2px solid #d7deea">Competência</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Principal</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Fator IPCA-E</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Principal corrigido</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Juros (0,5% a.m.)</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Total bruto</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">IR</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Líquido</th></tr></thead>
 <tbody id="descLinhas"></tbody>
 <tfoot id="descTotais"></tfoot>
 </table>
-</div></div></div>
+</div></div>
 <p class="hint">Juros simples: 0,5% por mês sobre o principal corrigido, contando a diferença entre as competências. A correção monetária é aplicada separadamente. O mês de ingresso é proporcional aos dias trabalhados, contando o próprio dia de início. Para o 13º, cada mês de 2021 conta quando houver pelo menos 15 dias de vínculo no mês; a parcela é calculada à razão de 1/12 por mês computável. A linha de 1/3 de férias somente é incluída quando a opção de venda estiver marcada.</p>
 </div>
 </section>
@@ -482,7 +480,7 @@ calc();
  ['descPadrao','descTri','descDataInicio','descDataFinal','descVendeuFerias'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
  $d('descAtualizar').addEventListener('click',carregarIPCAD);
   $d('descMostrarCompleto').addEventListener('change',()=>{$d('descTabelaCompleta').classList.toggle('hidden',!$d('descMostrarCompleto').checked);$d('descTabelaResumo').classList.toggle('hidden',$d('descMostrarCompleto').checked)});
- $d('descMostrarCompleto').addEventListener('change',()=>{$d('descTabelaCompleta').classList.toggle('hidden',!$d('descMostrarCompleto').checked);$d('descTabelaResumo').classList.toggle('hidden',$d('descMostrarCompleto').checked)});
+
  
  carregarIPCAD();
 })();
