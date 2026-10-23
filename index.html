@@ -238,7 +238,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="result"><small>Percentual da diferença</small><strong>6,75919%</strong></div>
 <div class="result"><small>IRRF</small><strong>Isento</strong></div>
 </div>
-<div class="actions"><button type="button" id="descAtualizar" class="primary">Atualizar IPCA-E</button><button type="button" id="descRecalcular" class="secondary">Recalcular</button></div>
+<div class="actions"><button type="button" id="descAtualizar" class="primary">Atualizar IPCA-E</button></div>
 <p id="descStatus" class="hint" role="status" aria-live="polite">Carregando série histórica do IPCA-E…</p>
 <div class="warning">O índice mais recente pode ainda não ter sido divulgado. A correção usa apenas as competências disponíveis na série consultada. Confira os fatores e a memória de cálculo antes de utilizar o demonstrativo oficialmente.</div>
 </div>
@@ -474,7 +474,7 @@ calc();
  const hoje=new Date();$d('descDataFinal').value=hoje.getFullYear()+'-'+String(hoje.getMonth()+1).padStart(2,'0')+'-'+String(hoje.getDate()).padStart(2,'0');
  ['descPadrao','descTri','descDataInicio','descDataFinal','descVendeuFerias'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
  $d('descAtualizar').addEventListener('click',carregarIPCAD);
- $d('descRecalcular').addEventListener('click',calcularD);
+ 
  carregarIPCAD();
 })();
 </script>
