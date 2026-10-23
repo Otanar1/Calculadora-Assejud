@@ -223,6 +223,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <section id="descongela" class="panel hidden">
 <div class="card">
 <h3>Descongela — diferenças de exercício findo</h3>
+<div class="warning" style="margin:12px 0 16px">Estes cálculos são meramente estimativos. Não temos confirmação dos índices de atualização monetária e das taxas de juros que serão aplicados pelo TJSC. A simulação foi elaborada com base nos parâmetros utilizados em pagamentos anteriores, podendo divergir dos critérios que venham a ser efetivamente adotados.</div>
 <p class="hint">Cálculo totalmente independente das demais abas. Selecione o padrão salarial histórico e a quantidade de triênios que a pessoa possuía entre maio e dezembro de 2021. Os valores abaixo são fixos e representam a tabela histórica da época. O IR é considerado isento neste demonstrativo.</p>
 <div class="grid">
 <div class="field"><label for="descPadrao">Padrão salarial de referência (época)</label><select id="descPadrao"><option value="3949.30">DASU-1</option><option value="4823.12">DASU-2</option><option value="5985.34" selected>DASU-3</option><option value="7937.14">DASU-4</option><option value="10668.21">DASU-5</option><option value="14005.07">DASU-6</option><option value="14269.50">DASU-7</option><option value="14672.73">DASU-8</option><option value="15583.27">DASU-9</option><option value="18204.34">DASU-10</option></select></div>
@@ -396,7 +397,7 @@ calc();
  const mesesD=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
  function mesKeyD(y,m){return y+'-'+String(m).padStart(2,'0')}
  function parseDateD(v){if(!v)return new Date();const a=v.split('-').map(Number);return new Date(a[0],a[1]-1,a[2]||1)}
- function monthDiffD(a,b){return Math.max(0,(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth()+1)}
+ function monthDiffD(a,b){return Math.max(0,(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth())}
  function competenciaD(y,m){return mesesD[m-1]+'/'+String(y).slice(-2)}
  async function carregarIPCAD(){
    const hoje=parseDateD($d('descDataFinal').value);
