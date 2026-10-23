@@ -124,6 +124,11 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 @media(max-width:720px){#rcm .coop-reference,#rcm .coop-hours-row,#rcm .coop-results{grid-template-columns:1fr}}
 #mensal #rcmVal{border-color:#cad3e1;background:#fff}
 
+
+#descongela table th,#descongela table td{border-bottom:1px solid #e1e6ef;padding:9px 7px}
+#descongela table td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#descongela table tfoot td{font-weight:750;border-top:2px solid #9aa9bf;background:#f5f8fd}
+
 </style>
 </head>
 <body>
@@ -132,7 +137,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <main>
 <h2>Calculadora salarial</h2>
 <div class="tabs" role="tablist">
-<button class="active" data-tab="mensal">Salário mensal</button><button data-tab="plantao">Plantão</button><button data-tab="cooperacao">Cooperação</button><button data-tab="rcm">RCM</button><button data-tab="parametros">Parâmetros</button><button data-tab="tributacao">Parâmetros IR/INSS</button>
+<button class="active" data-tab="mensal">Salário mensal</button><button data-tab="plantao">Plantão</button><button data-tab="cooperacao">Cooperação</button><button data-tab="rcm">RCM</button><button data-tab="descongela">Descongela</button><button data-tab="parametros">Parâmetros</button><button data-tab="tributacao">Parâmetros IR/INSS</button>
 </div>
 <section id="mensal" class="panel">
 <div class="card"><h3>Dados do cálculo</h3><div class="grid">
@@ -214,6 +219,38 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 </div>
 <div class="actions"><button id="salvarTributacao" class="primary">Salvar parâmetros tributários</button><button id="restaurarTributacao" class="secondary">Restaurar parâmetros tributários</button></div>
 <p class="hint">Os parâmetros tributários são salvos neste navegador, separados dos parâmetros salariais. Confirme os valores oficiais antes de iniciar um novo ano-calendário.</p></div></section>
+
+<section id="descongela" class="panel hidden">
+<div class="card">
+<h3>Descongela — diferenças de exercício findo</h3>
+<p class="hint">Cálculo independente das demais abas. Informe o vencimento-base vigente à época (maio a dezembro de 2021) e a quantidade de triênios que a pessoa possuía naquele período. O IR é considerado isento neste demonstrativo.</p>
+<div class="grid">
+<div class="field"><label for="descBase">Vencimento-base da época (R$)</label><input id="descBase" type="number" min="0" step=".01" value="5985.34"></div>
+<div class="field"><label for="descTri">Quantidade de triênios na época</label><select id="descTri"><option value="0">0 triênios</option><option value="1">1 triênio</option><option value="2">2 triênios</option><option value="3">3 triênios</option><option value="4">4 triênios</option><option value="5">5 triênios</option><option value="6">6 triênios</option><option value="7">7 triênios</option><option value="8">8 triênios</option><option value="9">9 triênios</option><option value="10">10 triênios</option><option value="11">11 triênios</option><option value="12">12 triênios</option><option value="13">13 triênios</option><option value="14">14 triênios</option><option value="15">15 triênios</option><option value="16">16 triênios</option><option value="17">17 triênios</option><option value="18">18 triênios</option><option value="19">19 triênios</option><option value="20">20 triênios</option></select></div>
+<div class="field"><label for="descDataFinal">Atualizar até</label><input id="descDataFinal" type="date"></div>
+</div>
+<div class="results coop-reference" style="margin-top:16px">
+<div class="result"><small>Triênio da época</small><strong id="descTriValor">R$ 0,00</strong></div>
+<div class="result"><small>Percentual da diferença</small><strong>6,75919%</strong></div>
+<div class="result"><small>IRRF</small><strong>Isento</strong></div>
+</div>
+<div class="actions"><button type="button" id="descAtualizar" class="primary">Atualizar IPCA-E</button><button type="button" id="descRecalcular" class="secondary">Recalcular</button></div>
+<p id="descStatus" class="hint" role="status" aria-live="polite">Carregando série histórica do IPCA-E…</p>
+<div class="warning">O índice mais recente pode ainda não ter sido divulgado. A correção usa apenas as competências disponíveis na série consultada. Confira os fatores e a memória de cálculo antes de utilizar o demonstrativo oficialmente.</div>
+</div>
+<div class="card">
+<h3>Memória de cálculo por competência</h3>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;min-width:850px;font-size:13px">
+<thead><tr><th style="text-align:left;padding:9px;border-bottom:2px solid #d7deea">Competência</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Principal</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Fator IPCA-E</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Principal corrigido</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Juros (0,5% a.m.)</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Total bruto</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">IR</th><th style="text-align:right;padding:9px;border-bottom:2px solid #d7deea">Líquido</th></tr></thead>
+<tbody id="descLinhas"></tbody>
+<tfoot id="descTotais"></tfoot>
+</table>
+</div>
+<p class="hint">Juros simples: 0,5% por mês sobre o principal corrigido, contando a competência inicial até o mês de atualização. A correção monetária é aplicada separadamente. O 13º corresponde a uma parcela integral de dezembro; o adicional de férias corresponde a 1/3 da parcela de dezembro.</p>
+</div>
+</section>
+
 <footer class="hint" style="text-align:center;padding:12px 0 24px">Parâmetros tributários: <span id="rodapeAno">2026</span><span class="creator">Criado por Renato Elias (<a href="https://teams.microsoft.com/l/chat/0/0?users=rlelias%40tjsc.jus.br" target="_blank" rel="noopener noreferrer">@rlelias</a>)</span></footer>
 <section id="cooperacao" class="panel hidden">
 <div class="card"><h3>Cooperação</h3>
@@ -347,6 +384,86 @@ $('restaurarTributacao').onclick=()=>{if(confirm('Restaurar os parâmetros tribu
 try{const savedTax=JSON.parse(localStorage.getItem('assejud-tributacao')||'null');if(savedTax){tax={...taxDefaults,...savedTax};renderTaxParams();}}catch(e){}
 calc();
 </script>
+
+<script>
+(()=> {
+ const $d=id=>document.getElementById(id);
+ const moneyD=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+ const pctD=n=>(n*100).toLocaleString('pt-BR',{minimumFractionDigits:5,maximumFractionDigits:5})+'%';
+ let ipcaMensal={}, ipcaFonte='não carregada', ipcaUltima='';
+ const mesesD=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+ function mesKeyD(y,m){return y+'-'+String(m).padStart(2,'0')}
+ function parseDateD(v){if(!v)return new Date();const a=v.split('-').map(Number);return new Date(a[0],a[1]-1,a[2]||1)}
+ function monthDiffD(a,b){return Math.max(0,(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth()+1)}
+ function competenciaD(y,m){return mesesD[m-1]+'/'+String(y).slice(-2)}
+ async function carregarIPCAD(){
+   const hoje=parseDateD($d('descDataFinal').value);
+   const fim=new Date(hoje.getFullYear(),hoje.getMonth()+1,0);
+   const fmt=d=>String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+   $d('descStatus').textContent='Consultando a série histórica do IPCA-E…';
+   try{
+     const url='https://api.bcb.gov.br/dados/serie/bcdata.sgs.10764/dados?formato=json&dataInicial=01/05/2021&dataFinal='+fmt(fim);
+     const res=await fetch(url,{cache:'no-store'});
+     if(!res.ok)throw new Error('HTTP '+res.status);
+     const data=await res.json();
+     const nova={};
+     for(const x of data){const p=x.data.split('/').map(Number);const val=Number(String(x.valor).replace(',','.'));if(p.length===3&&Number.isFinite(val))nova[mesKeyD(p[2],p[1])]=val/100}
+     if(!Object.keys(nova).length)throw new Error('A série não retornou valores mensais.');
+     ipcaMensal=nova;ipcaFonte='Banco Central do Brasil — SGS 10764';
+     const keys=Object.keys(nova).sort();ipcaUltima=keys[keys.length-1];
+     $d('descStatus').textContent='IPCA-E carregado da série SGS 10764. Última competência disponível: '+competenciaD(Number(ipcaUltima.slice(0,4)),Number(ipcaUltima.slice(5,7)))+'.';
+     calcularD();
+   }catch(e){
+     ipcaMensal={};ipcaFonte='indisponível';
+     $d('descStatus').textContent='Não consegui carregar automaticamente o IPCA-E ('+e.message+'). A API pode estar indisponível ou bloquear a consulta pelo navegador. Posso adaptar a aba para importar a tabela oficial do IBGE; por enquanto, os fatores são exibidos como indisponíveis e não serão inventados.';
+     calcularD();
+   }
+ }
+ function fatorD(key,finalKey){
+   const keys=Object.keys(ipcaMensal).filter(k=>k>=key&&k<=finalKey).sort();
+   if(!keys.length||!ipcaMensal[key])return null;
+   let f=1;
+   for(const k of keys)f*=1+ipcaMensal[k];
+   return f;
+ }
+ function calcularD(){
+   const base=Math.max(0,Number($d('descBase').value)||0);
+   const qtd=Math.max(0,Math.min(20,Math.floor(Number($d('descTri').value)||0)));
+   const trienio=Math.round(base*qtd*0.03*100)/100;
+   const baseTri=base+trienio;
+   const principalBase=Math.round(baseTri*0.0675919*100)/100;
+   $d('descTriValor').textContent=moneyD(trienio);
+   const dataFinal=parseDateD($d('descDataFinal').value);
+   const endKey=ipcaUltima || mesKeyD(dataFinal.getFullYear(),dataFinal.getMonth()+1);
+   const linhas=[];
+   for(let m=5;m<=12;m++){
+     const key=mesKeyD(2021,m);
+     linhas.push({label:competenciaD(2021,m),key,principal:principalBase});
+   }
+   linhas.push({label:'13º — dez/21',key:mesKeyD(2021,12),principal:principalBase});
+   linhas.push({label:'1/3 férias — dez/21',key:mesKeyD(2021,12),principal:Math.round(principalBase/3*100)/100});
+   let totals={p:0,c:0,j:0,t:0};
+   $d('descLinhas').innerHTML=linhas.map(l=>{
+     const f=fatorD(l.key,endKey);
+     const corr=f===null?null:Math.round(l.principal*f*100)/100;
+     const meses=monthDiffD(parseDateD(l.key+'-01'),dataFinal);
+     const juros=corr===null?null:Math.round(corr*0.005*meses*100)/100;
+     const total=corr===null?null:Math.round((corr+juros)*100)/100;
+     totals.p+=l.principal;
+     if(corr!==null){totals.c+=corr;totals.j+=juros;totals.t+=total}
+     return '<tr><td>'+l.label+'</td><td class="num">'+moneyD(l.principal)+'</td><td class="num">'+(f===null?'Indisponível':f.toLocaleString('pt-BR',{minimumFractionDigits:8,maximumFractionDigits:8}))+'</td><td class="num">'+(corr===null?'—':moneyD(corr))+'</td><td class="num">'+(juros===null?'—':moneyD(juros)+' <span class="hint">('+pctD(0.005*meses)+')</span>')+'</td><td class="num">'+(total===null?'—':moneyD(total))+'</td><td class="num">Isento</td><td class="num">'+(total===null?'—':moneyD(total))+'</td></tr>';
+   }).join('');
+   const completos=linhas.every(l=>fatorD(l.key,endKey)!==null);
+   $d('descTotais').innerHTML='<tr><td>TOTAIS</td><td class="num">'+moneyD(totals.p)+'</td><td class="num">—</td><td class="num">'+(completos?moneyD(totals.c):'—')+'</td><td class="num">'+(completos?moneyD(totals.j):'—')+'</td><td class="num">'+(completos?moneyD(totals.t):'—')+'</td><td class="num">Isento</td><td class="num">'+(completos?moneyD(totals.t):'—')+'</td></tr>';
+ }
+ const hoje=new Date();$d('descDataFinal').value=hoje.getFullYear()+'-'+String(hoje.getMonth()+1).padStart(2,'0')+'-'+String(hoje.getDate()).padStart(2,'0');
+ ['descBase','descTri','descDataFinal'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
+ $d('descAtualizar').addEventListener('click',carregarIPCAD);
+ $d('descRecalcular').addEventListener('click',calcularD);
+ carregarIPCAD();
+})();
+</script>
+
 <script>
 (()=>{const header=document.querySelector("header");if(!header)return;const updateHeaderHeight=()=>document.documentElement.style.setProperty("--header-height",`${header.getBoundingClientRect().height}px`);updateHeaderHeight();if("ResizeObserver" in window)new ResizeObserver(updateHeaderHeight).observe(header);window.addEventListener("resize",updateHeaderHeight,{passive:true});})();
 </script>
