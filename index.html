@@ -229,6 +229,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <div class="field"><label for="descPadrao">Padrão salarial de referência (época)</label><select id="descPadrao"><option value="3949.30">DASU-1</option><option value="4823.12">DASU-2</option><option value="5985.34" selected>DASU-3</option><option value="7937.14">DASU-4</option><option value="10668.21">DASU-5</option><option value="14005.07">DASU-6</option><option value="14269.50">DASU-7</option><option value="14672.73">DASU-8</option><option value="15583.27">DASU-9</option><option value="18204.34">DASU-10</option></select></div>
 <div class="field"><label for="descBase">Valor histórico do padrão (R$)</label><input id="descBase" type="text" value="R$ 5.985,34" readonly></div>
 <div class="field"><label for="descTri">Quantidade de triênios na época</label><select id="descTri"><option value="0">0 triênios</option><option value="1">1 triênio</option><option value="2">2 triênios</option><option value="3">3 triênios</option><option value="4">4 triênios</option><option value="5">5 triênios</option><option value="6">6 triênios</option><option value="7">7 triênios</option><option value="8">8 triênios</option><option value="9">9 triênios</option><option value="10">10 triênios</option><option value="11">11 triênios</option><option value="12">12 triênios</option><option value="13">13 triênios</option><option value="14">14 triênios</option><option value="15">15 triênios</option><option value="16">16 triênios</option><option value="17">17 triênios</option><option value="18">18 triênios</option><option value="19">19 triênios</option><option value="20">20 triênios</option></select></div>
+<div class="field"><label for="descDataInicio">Data de ingresso no TJSC</label><input id="descDataInicio" type="date" min="2000-01-01" max="2021-12-31" value="2021-01-01"><span class="hint">Usada para proporcionalizar o mês de ingresso e o 13º de 2021.</span></div>
 <div class="field"><label for="descDataFinal">Atualizar até</label><input id="descDataFinal" type="date"></div>
 <div class="field"><label>Venda de 1/3 de férias na época</label><label class="inline"><input id="descVendeuFerias" type="checkbox"> Sim, incluir 1/3 de férias</label><span class="hint">Marque somente se houve venda do adicional de férias.</span></div>
 </div>
@@ -250,7 +251,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <tfoot id="descTotais"></tfoot>
 </table>
 </div>
-<p class="hint">Juros simples: 0,5% por mês sobre o principal corrigido, contando a competência inicial até o mês de atualização. A correção monetária é aplicada separadamente. O 13º corresponde a uma parcela integral de dezembro. A linha de 1/3 de férias somente é incluída quando a opção de venda estiver marcada.</p>
+<p class="hint">Juros simples: 0,5% por mês sobre o principal corrigido, contando a diferença entre as competências. A correção monetária é aplicada separadamente. O mês de ingresso é proporcional aos dias trabalhados, contando o próprio dia de início. Para o 13º, cada mês de 2021 conta quando houver pelo menos 15 dias de vínculo no mês; a parcela é calculada à razão de 1/12 por mês computável. A linha de 1/3 de férias somente é incluída quando a opção de venda estiver marcada.</p>
 </div>
 </section>
 
@@ -436,19 +437,30 @@ calc();
    const baseTri=base+trienio;
    const principalBase=Math.round(baseTri*0.0675919*100)/100;
    $d('descBase').value=moneyD(base);$d('descTriValor').textContent=moneyD(trienio);
+   const dataInicio=parseDateD($d('descDataInicio').value||'2021-01-01');
    const dataFinal=parseDateD($d('descDataFinal').value);
    const endKey=ipcaUltima || mesKeyD(dataFinal.getFullYear(),dataFinal.getMonth()+1);
    const linhas=[];
    for(let m=5;m<=12;m++){
-     const key=mesKeyD(2021,m);
-     linhas.push({label:competenciaD(2021,m),key,principal:principalBase});
+     const key=mesKeyD(2021,m), primeiro=new Date(2021,m-1,1), ultimo=new Date(2021,m,0);
+     if(ultimo<dataInicio)continue;
+     let fatorDias=1;
+     if(dataInicio.getFullYear()===2021&&dataInicio.getMonth()+1===m)fatorDias=(ultimo.getDate()-dataInicio.getDate()+1)/ultimo.getDate();
+     linhas.push({label:competenciaD(2021,m),key,principal:Math.round(principalBase*fatorDias*100)/100});
    }
-   linhas.push({label:'13º — dez/21',key:mesKeyD(2021,12),principal:principalBase});
+   let meses13=0;
+   for(let m=1;m<=12;m++){
+     const primeiro=new Date(2021,m-1,1), ultimo=new Date(2021,m,0);
+     if(dataInicio>ultimo)continue;
+     const inicioEfetivo=dataInicio>primeiro?dataInicio:primeiro;
+     if(ultimo.getDate()-inicioEfetivo.getDate()+1>=15)meses13++;
+   }
+   const principal13=Math.round(principalBase*meses13/12*100)/100;
+   if(principal13>0)linhas.push({label:'13º — dez/21 ('+meses13+'/12)',key:mesKeyD(2021,12),principal:principal13});
    if($d('descVendeuFerias').checked)linhas.push({label:'1/3 férias — dez/21',key:mesKeyD(2021,12),principal:Math.round(principalBase/3*100)/100});
    let totals={p:0,c:0,j:0,t:0};
    $d('descLinhas').innerHTML=linhas.map(l=>{
-     const f=fatorD(l.key,endKey);
-     const corr=f===null?null:Math.round(l.principal*f*100)/100;
+     const f=fatorD(l.key,endKey), corr=f===null?null:Math.round(l.principal*f*100)/100;
      const meses=monthDiffD(parseDateD(l.key+'-01'),dataFinal);
      const juros=corr===null?null:Math.round(corr*0.005*meses*100)/100;
      const total=corr===null?null:Math.round((corr+juros)*100)/100;
@@ -460,7 +472,7 @@ calc();
    $d('descTotais').innerHTML='<tr><td>TOTAIS</td><td class="num">'+moneyD(totals.p)+'</td><td class="num">—</td><td class="num">'+(completos?moneyD(totals.c):'—')+'</td><td class="num">'+(completos?moneyD(totals.j):'—')+'</td><td class="num">'+(completos?moneyD(totals.t):'—')+'</td><td class="num">Isento</td><td class="num">'+(completos?moneyD(totals.t):'—')+'</td></tr>';
  }
  const hoje=new Date();$d('descDataFinal').value=hoje.getFullYear()+'-'+String(hoje.getMonth()+1).padStart(2,'0')+'-'+String(hoje.getDate()).padStart(2,'0');
- ['descPadrao','descTri','descDataFinal','descVendeuFerias'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
+ ['descPadrao','descTri','descDataInicio','descDataFinal','descVendeuFerias'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
  $d('descAtualizar').addEventListener('click',carregarIPCAD);
  $d('descRecalcular').addEventListener('click',calcularD);
  carregarIPCAD();
