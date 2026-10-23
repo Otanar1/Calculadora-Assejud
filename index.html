@@ -6,10 +6,10 @@
 <title>Calculadora Salarial — ASSEJUD</title>
 <style>
 :root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#172033;background:#f4f6fa}
-*{box-sizing:border-box}html{scrollbar-gutter:stable}body{margin:0}.layout{display:block;min-height:100vh}
+*{box-sizing:border-box}html{scrollbar-gutter:stable}body{margin:0}.layout{display:block;min-height:100vh}header{position:sticky;top:0;z-index:100;background:#fff}
 aside{background:#fff;color:#172033;padding:16px 30px;border-bottom:1px solid #e1e6ef;display:flex;align-items:center;gap:22px}aside .brand-logo{display:block;width:144px;height:auto;max-width:38vw}aside .brand-copy{min-width:0}aside h1{font-size:19px;margin:0 0 4px}aside p{font-size:13px;color:#63718a;line-height:1.5;margin:0}aside hr{display:none}.join-link{display:inline-flex;align-items:center;justify-content:center;margin-left:auto;background:#234b89;color:#fff;text-decoration:none;font-weight:700;padding:11px 17px;border-radius:9px;white-space:nowrap}.join-link:hover{background:#193a6c}footer .creator{display:block;margin-top:5px}footer .creator a{color:#4567a5;text-decoration:none}footer .creator a:hover{text-decoration:underline}
 main{padding:30px;max-width:1150px;width:100%;margin:0 auto}.eyebrow{color:#4567a5;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
-h2{margin:6px 0 22px;font-size:28px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.tabs button{border:1px solid #d7deea;background:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}.tabs button.active{background:#234b89;color:#fff;border-color:#234b89}
+h2{margin:6px 0 22px;font-size:28px}.tabs{position:sticky;top:var(--header-height,90px);z-index:90;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;padding:9px 0;background:#f4f6fa}.tabs button{border:1px solid #d7deea;background:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}.tabs button.active{background:#234b89;color:#fff;border-color:#234b89}
 .card{background:#fff;border:1px solid #e1e6ef;border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px #1b31520a}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:13px;font-weight:650;color:#536078}
 input,select{font:inherit;border:1px solid #cad3e1;border-radius:9px;padding:11px;background:#fff;width:100%;color:#172033}input:focus,select:focus{outline:2px solid #b3c9f4;border-color:#547bc1}
@@ -344,6 +344,9 @@ $('salvarTributacao').onclick=()=>{readTaxParams();localStorage.setItem('assejud
 $('restaurarTributacao').onclick=()=>{if(confirm('Restaurar os parâmetros tributários para os valores do sistema?')){tax={...taxDefaults,inss:taxDefaults.inss.map(x=>({...x})),ir:taxDefaults.ir.map(x=>({...x}))};renderTaxParams();calc()}};
 try{const savedTax=JSON.parse(localStorage.getItem('assejud-tributacao')||'null');if(savedTax){tax={...taxDefaults,...savedTax};renderTaxParams();}}catch(e){}
 calc();
+</script>
+<script>
+(()=>{const header=document.querySelector("header");if(!header)return;const updateHeaderHeight=()=>document.documentElement.style.setProperty("--header-height",`${header.getBoundingClientRect().height}px`);updateHeaderHeight();if("ResizeObserver" in window)new ResizeObserver(updateHeaderHeight).observe(header);window.addEventListener("resize",updateHeaderHeight,{passive:true});})();
 </script>
 </body>
 </html>
