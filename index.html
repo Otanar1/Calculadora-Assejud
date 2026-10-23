@@ -223,11 +223,13 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <section id="descongela" class="panel hidden">
 <div class="card">
 <h3>Descongela — diferenças de exercício findo</h3>
-<p class="hint">Cálculo independente das demais abas. Informe o vencimento-base vigente à época (maio a dezembro de 2021) e a quantidade de triênios que a pessoa possuía naquele período. O IR é considerado isento neste demonstrativo.</p>
+<p class="hint">Cálculo totalmente independente das demais abas. Selecione o padrão salarial histórico e a quantidade de triênios que a pessoa possuía entre maio e dezembro de 2021. Os valores abaixo são fixos e representam a tabela histórica da época. O IR é considerado isento neste demonstrativo.</p>
 <div class="grid">
-<div class="field"><label for="descBase">Vencimento-base da época (R$)</label><input id="descBase" type="number" min="0" step=".01" value="5985.34"></div>
+<div class="field"><label for="descPadrao">Padrão salarial de referência (época)</label><select id="descPadrao"><option value="3949.30">DASU-1</option><option value="4823.12">DASU-2</option><option value="5985.34" selected>DASU-3</option><option value="7937.14">DASU-4</option><option value="10668.21">DASU-5</option><option value="14005.07">DASU-6</option><option value="14269.50">DASU-7</option><option value="14672.73">DASU-8</option><option value="15583.27">DASU-9</option><option value="18204.34">DASU-10</option></select></div>
+<div class="field"><label for="descBase">Valor histórico do padrão (R$)</label><input id="descBase" type="text" value="R$ 5.985,34" readonly></div>
 <div class="field"><label for="descTri">Quantidade de triênios na época</label><select id="descTri"><option value="0">0 triênios</option><option value="1">1 triênio</option><option value="2">2 triênios</option><option value="3">3 triênios</option><option value="4">4 triênios</option><option value="5">5 triênios</option><option value="6">6 triênios</option><option value="7">7 triênios</option><option value="8">8 triênios</option><option value="9">9 triênios</option><option value="10">10 triênios</option><option value="11">11 triênios</option><option value="12">12 triênios</option><option value="13">13 triênios</option><option value="14">14 triênios</option><option value="15">15 triênios</option><option value="16">16 triênios</option><option value="17">17 triênios</option><option value="18">18 triênios</option><option value="19">19 triênios</option><option value="20">20 triênios</option></select></div>
 <div class="field"><label for="descDataFinal">Atualizar até</label><input id="descDataFinal" type="date"></div>
+<div class="field"><label>Venda de 1/3 de férias na época</label><label class="inline"><input id="descVendeuFerias" type="checkbox"> Sim, incluir 1/3 de férias</label><span class="hint">Marque somente se houve venda do adicional de férias.</span></div>
 </div>
 <div class="results coop-reference" style="margin-top:16px">
 <div class="result"><small>Triênio da época</small><strong id="descTriValor">R$ 0,00</strong></div>
@@ -247,7 +249,7 @@ hr{border:0;border-top:1px solid #e6eaf1;margin:20px 0}.warning{padding:12px 14p
 <tfoot id="descTotais"></tfoot>
 </table>
 </div>
-<p class="hint">Juros simples: 0,5% por mês sobre o principal corrigido, contando a competência inicial até o mês de atualização. A correção monetária é aplicada separadamente. O 13º corresponde a uma parcela integral de dezembro; o adicional de férias corresponde a 1/3 da parcela de dezembro.</p>
+<p class="hint">Juros simples: 0,5% por mês sobre o principal corrigido, contando a competência inicial até o mês de atualização. A correção monetária é aplicada separadamente. O 13º corresponde a uma parcela integral de dezembro. A linha de 1/3 de férias somente é incluída quando a opção de venda estiver marcada.</p>
 </div>
 </section>
 
@@ -427,12 +429,12 @@ calc();
    return f;
  }
  function calcularD(){
-   const base=Math.max(0,Number($d('descBase').value)||0);
+   const base=Math.max(0,Number($d('descPadrao').value)||0);
    const qtd=Math.max(0,Math.min(20,Math.floor(Number($d('descTri').value)||0)));
    const trienio=Math.round(base*qtd*0.03*100)/100;
    const baseTri=base+trienio;
    const principalBase=Math.round(baseTri*0.0675919*100)/100;
-   $d('descTriValor').textContent=moneyD(trienio);
+   $d('descBase').value=moneyD(base);$d('descTriValor').textContent=moneyD(trienio);
    const dataFinal=parseDateD($d('descDataFinal').value);
    const endKey=ipcaUltima || mesKeyD(dataFinal.getFullYear(),dataFinal.getMonth()+1);
    const linhas=[];
@@ -441,7 +443,7 @@ calc();
      linhas.push({label:competenciaD(2021,m),key,principal:principalBase});
    }
    linhas.push({label:'13º — dez/21',key:mesKeyD(2021,12),principal:principalBase});
-   linhas.push({label:'1/3 férias — dez/21',key:mesKeyD(2021,12),principal:Math.round(principalBase/3*100)/100});
+   if($d('descVendeuFerias').checked)linhas.push({label:'1/3 férias — dez/21',key:mesKeyD(2021,12),principal:Math.round(principalBase/3*100)/100});
    let totals={p:0,c:0,j:0,t:0};
    $d('descLinhas').innerHTML=linhas.map(l=>{
      const f=fatorD(l.key,endKey);
@@ -457,7 +459,7 @@ calc();
    $d('descTotais').innerHTML='<tr><td>TOTAIS</td><td class="num">'+moneyD(totals.p)+'</td><td class="num">—</td><td class="num">'+(completos?moneyD(totals.c):'—')+'</td><td class="num">'+(completos?moneyD(totals.j):'—')+'</td><td class="num">'+(completos?moneyD(totals.t):'—')+'</td><td class="num">Isento</td><td class="num">'+(completos?moneyD(totals.t):'—')+'</td></tr>';
  }
  const hoje=new Date();$d('descDataFinal').value=hoje.getFullYear()+'-'+String(hoje.getMonth()+1).padStart(2,'0')+'-'+String(hoje.getDate()).padStart(2,'0');
- ['descBase','descTri','descDataFinal'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
+ ['descPadrao','descTri','descDataFinal','descVendeuFerias'].forEach(id=>{$d(id).addEventListener('input',calcularD);$d(id).addEventListener('change',calcularD)});
  $d('descAtualizar').addEventListener('click',carregarIPCAD);
  $d('descRecalcular').addEventListener('click',calcularD);
  carregarIPCAD();
